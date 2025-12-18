@@ -2,7 +2,7 @@ import UIKit
 
 /// `JSQMessagesCellTextView` is a subclass of `UITextView` that is used to display text
 /// in a `JSQMessagesCollectionViewCell`.
-@objc public class JSQMessagesCellTextView: UITextView {
+public class JSQMessagesCellTextView: UITextView {
 
     public override func awakeFromNib() {
         super.awakeFromNib()

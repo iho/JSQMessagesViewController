@@ -5,7 +5,7 @@ import UIKit
 /// It contains a regular avatar image, a highlighted avatar image, and a placeholder avatar image.
 ///
 /// - seealso: JSQMessagesAvatarImageFactory
-@objc public class JSQMessagesAvatarImage: NSObject, JSQMessageAvatarImageDataSource, NSCopying {
+public class JSQMessagesAvatarImage: NSObject, JSQMessageAvatarImageDataSource, NSCopying {
 
     /**
      *  The avatar image for a regular display state.
@@ -31,7 +31,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImage` object.
      */
-    @objc public static func avatar(with image: UIImage) -> JSQMessagesAvatarImage {
+    public static func avatar(with image: UIImage) -> JSQMessagesAvatarImage {
         return JSQMessagesAvatarImage(
             avatarImage: image, highlightedImage: image, placeholderImage: image)
     }
@@ -43,7 +43,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImage` object.
      */
-    @objc public static func avatarImage(withPlaceholder placeholderImage: UIImage)
+    public static func avatarImage(withPlaceholder placeholderImage: UIImage)
         -> JSQMessagesAvatarImage
     {
         return JSQMessagesAvatarImage(
@@ -59,8 +59,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImage` object.
      */
-    @objc public init(avatarImage: UIImage?, highlightedImage: UIImage?, placeholderImage: UIImage)
-    {
+    public init(avatarImage: UIImage?, highlightedImage: UIImage?, placeholderImage: UIImage) {
         self.avatarImage = avatarImage
         self.avatarHighlightedImage = highlightedImage
         self.avatarPlaceholderImage = placeholderImage

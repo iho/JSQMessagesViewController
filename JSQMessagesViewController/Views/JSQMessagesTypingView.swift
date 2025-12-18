@@ -1,23 +1,23 @@
 import UIKit
 
-@objc public class JSQMessagesTypingView: UIView {
+public class JSQMessagesTypingView: UIView {
 
-    @objc public var dotsColor: UIColor = .lightGray {
+    public var dotsColor: UIColor = .lightGray {
         didSet {
             dot?.fillColor = dotsColor.cgColor
             updateAnimation()
         }
     }
 
-    @objc public var animateToColor: UIColor = .gray {
+    public var animateToColor: UIColor = .gray {
         didSet {
             updateAnimation()
         }
     }
 
-    @objc public var animationDuration: CGFloat = 1.33
+    public var animationDuration: CGFloat = 1.33
 
-    @objc public var isAnimated: Bool = false {
+    public var isAnimated: Bool = false {
         didSet {
             updateAnimation()
         }

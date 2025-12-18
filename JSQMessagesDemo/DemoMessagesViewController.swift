@@ -34,7 +34,7 @@ class DemoMessagesViewController: JSQMessagesViewController, UIActionSheetDelega
         // Load demo data
         // self.demoData is initialized in declaration
 
-        // Note: Cannot set accessory delegate from non-@objc context in Swift
+        // Note: Cannot set accessory delegate from non- context in Swift
 
         if !UserDefaults.incomingAvatarSetting(),
             let layout = self.collectionView.collectionViewLayout
@@ -512,7 +512,7 @@ class DemoMessagesViewController: JSQMessagesViewController, UIActionSheetDelega
 
     // MARK: - JSQMessagesViewAccessoryDelegate methods
 
-    @objc func messageView(
+    func messageView(
         _ view: JSQMessagesCollectionView, didTapAccessoryButtonAt path: IndexPath
     ) {
         print("Tapped accessory button!")

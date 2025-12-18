@@ -39,7 +39,7 @@ import UIKit
      *
      *  @discussion You may return `nil` from this method while the media data is being downloaded.
      */
-    @objc func mediaView() -> UIView?
+    func mediaView() -> UIView?
 
     /**
      *  @return The frame size for the mediaView when displayed in a `JSQMessagesCollectionViewCell`.
@@ -50,7 +50,7 @@ import UIKit
      *
      *  @warning You must return a size with non-zero, positive width and height values.
      */
-    @objc func mediaViewDisplaySize() -> CGSize
+    func mediaViewDisplaySize() -> CGSize
 
     /**
      *  @return A placeholder media view to be displayed if mediaView is not yet available, or `nil`.
@@ -64,7 +64,7 @@ import UIKit
      *
      *  @see JSQMessagesMediaPlaceholderView.
      */
-    @objc func mediaPlaceholderView() -> UIView?
+    func mediaPlaceholderView() -> UIView?
 
     /**
      *  @return An integer that can be used as a table address in a hash table structure.
@@ -72,7 +72,7 @@ import UIKit
      *  @discussion This value must be unique for each media item with distinct contents.
      *  This value is used to cache layout information in the collection view.
      */
-    @objc func mediaHash() -> UInt
+    func mediaHash() -> UInt
 
     /**
      *  @return String which identifies type of the data returned by `mediaData` method.

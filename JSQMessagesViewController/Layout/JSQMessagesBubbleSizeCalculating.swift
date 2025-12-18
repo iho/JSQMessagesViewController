@@ -5,7 +5,7 @@ import UIKit
 ///
 /// A concrete class that conforms to this protocol is provided in the library.
 /// See `JSQMessagesBubbleSizeCalculator`.
-@objc public protocol JSQMessagesBubbleSizeCalculating: NSObjectProtocol {
+public protocol JSQMessagesBubbleSizeCalculating: NSObjectProtocol {
 
     /**
      *  Computes and returns the size of the `messageBubbleImageView` property

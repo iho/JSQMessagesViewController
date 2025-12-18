@@ -1,7 +1,7 @@
 import UIKit
 
 /// A delegate object used to notify the receiver of paste events from a `JSQMessagesComposerTextView`.
-@objc public protocol JSQMessagesComposerTextViewPasteDelegate: NSObjectProtocol {
+public protocol JSQMessagesComposerTextViewPasteDelegate: NSObjectProtocol {
 
     /**
      *  Asks the delegate whether or not the `textView` should use the original implementation of `-[UITextView paste]`.
@@ -17,12 +17,12 @@ import UIKit
 
 /// An instance of `JSQMessagesComposerTextView` is a subclass of `UITextView` that is styled and used
 /// for composing messages in a `JSQMessagesViewController`. It is a subview of a `JSQMessagesToolbarContentView`.
-@objc public class JSQMessagesComposerTextView: UITextView {
+public class JSQMessagesComposerTextView: UITextView {
 
     /**
      *  The text to be displayed when the text view is empty. The default value is `nil`.
      */
-    @objc public var placeHolder: String? {
+    public var placeHolder: String? {
         didSet {
             if placeHolder != oldValue {
                 self.setNeedsDisplay()
@@ -33,7 +33,7 @@ import UIKit
     /**
      *  The color of the place holder text. The default value is `[UIColor lightGrayColor]`.
      */
-    @objc public var placeHolderTextColor: UIColor = .lightGray {
+    public var placeHolderTextColor: UIColor = .lightGray {
         didSet {
             if placeHolderTextColor != oldValue {
                 self.setNeedsDisplay()
@@ -44,7 +44,7 @@ import UIKit
     /**
      *  The insets to be used when the placeholder is drawn. The default value is `UIEdgeInsets(5.0, 7.0, 5.0, 7.0)`.
      */
-    @objc public var placeHolderInsets: UIEdgeInsets = UIEdgeInsets(
+    public var placeHolderInsets: UIEdgeInsets = UIEdgeInsets(
         top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
     {
         didSet {
@@ -57,7 +57,7 @@ import UIKit
     /**
      *  The object that acts as the paste delegate of the text view.
      */
-    @objc public weak var composerPasteDelegate: JSQMessagesComposerTextViewPasteDelegate?
+    public weak var composerPasteDelegate: JSQMessagesComposerTextViewPasteDelegate?
 
     public override func paste(_ sender: Any?) {
         if let delegate = composerPasteDelegate,
@@ -74,13 +74,15 @@ import UIKit
      *
      *  - returns: `true` if the text view contains text, `false` otherwise.
      */
-    @objc public override var hasText: Bool {
+    public override var hasText: Bool {
         return (self.text.jsq_stringByTrimingWhitespace().count > 0)
     }
 
     private weak var heightConstraint: NSLayoutConstraint?
     private weak var minHeightConstraint: NSLayoutConstraint?
     private weak var maxHeightConstraint: NSLayoutConstraint?
+
+    private var notificationTokens: [NSObjectProtocol] = []
 
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -226,28 +228,31 @@ import UIKit
     // MARK: - Notifications
 
     private func jsq_addTextViewNotificationObservers() {
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(jsq_didReceiveTextViewNotification(_:)),
-            name: UITextView.textDidChangeNotification, object: self)
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(jsq_didReceiveTextViewNotification(_:)),
-            name: UITextView.textDidBeginEditingNotification, object: self)
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(jsq_didReceiveTextViewNotification(_:)),
-            name: UITextView.textDidEndEditingNotification, object: self)
+        let textDidChangeToken = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidChangeNotification, object: self, queue: nil
+        ) { [weak self] _ in
+            self?.setNeedsDisplay()
+        }
+        self.notificationTokens.append(textDidChangeToken)
+
+        let textDidBeginToken = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidBeginEditingNotification, object: self, queue: nil
+        ) { [weak self] _ in
+            self?.setNeedsDisplay()
+        }
+        self.notificationTokens.append(textDidBeginToken)
+
+        let textDidEndToken = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidEndEditingNotification, object: self, queue: nil
+        ) { [weak self] _ in
+            self?.setNeedsDisplay()
+        }
+        self.notificationTokens.append(textDidEndToken)
     }
 
     private func jsq_removeTextViewNotificationObservers() {
-        NotificationCenter.default.removeObserver(
-            self, name: UITextView.textDidChangeNotification, object: self)
-        NotificationCenter.default.removeObserver(
-            self, name: UITextView.textDidBeginEditingNotification, object: self)
-        NotificationCenter.default.removeObserver(
-            self, name: UITextView.textDidEndEditingNotification, object: self)
-    }
-
-    @objc private func jsq_didReceiveTextViewNotification(_ notification: Notification) {
-        self.setNeedsDisplay()
+        self.notificationTokens.forEach { NotificationCenter.default.removeObserver($0) }
+        self.notificationTokens.removeAll()
     }
 
     // MARK: - Utilities

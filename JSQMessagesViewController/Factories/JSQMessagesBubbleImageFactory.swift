@@ -2,7 +2,7 @@ import UIKit
 
 /// `JSQMessagesBubbleImageFactory` is a factory that provides a means for creating and styling
 /// `JSQMessagesBubbleImage` objects to be displayed in a `JSQMessagesCollectionViewCell` of a `JSQMessagesCollectionView`.
-@objc public class JSQMessagesBubbleImageFactory: NSObject {
+public class JSQMessagesBubbleImageFactory: NSObject {
 
     private let bubbleImage: UIImage
     private let capInsets: UIEdgeInsets
@@ -18,7 +18,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesBubbleImageFactory` object.
      */
-    @objc public override convenience init() {
+    public override convenience init() {
         self.init(
             bubbleImage: UIImage.jsq_bubbleCompact() ?? UIImage(),
             capInsets: .zero,
@@ -41,7 +41,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesBubbleImageFactory`.
      */
-    @objc public init(
+    public init(
         bubbleImage: UIImage, capInsets: UIEdgeInsets,
         layoutDirection: UIUserInterfaceLayoutDirection
     ) {
@@ -67,7 +67,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesBubbleImage` object.
      */
-    @objc public func outgoingMessagesBubbleImage(with color: UIColor) -> JSQMessagesBubbleImage {
+    public func outgoingMessagesBubbleImage(with color: UIColor) -> JSQMessagesBubbleImage {
         return self.jsq_messagesBubbleImage(
             with: color, flippedForIncoming: false != self.isRightToLeftLanguage)
     }
@@ -81,7 +81,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesBubbleImage` object.
      */
-    @objc public func incomingMessagesBubbleImage(with color: UIColor) -> JSQMessagesBubbleImage {
+    public func incomingMessagesBubbleImage(with color: UIColor) -> JSQMessagesBubbleImage {
         return self.jsq_messagesBubbleImage(
             with: color, flippedForIncoming: true != self.isRightToLeftLanguage)
     }

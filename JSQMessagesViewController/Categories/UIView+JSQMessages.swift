@@ -8,7 +8,7 @@ extension UIView {
      *  - parameter subview:   The subview to which the receiver will be pinned.
      *  - parameter attribute: The layout constraint attribute specifying one of `NSLayoutAttributeBottom`, `NSLayoutAttributeTop`, `NSLayoutAttributeLeading`, `NSLayoutAttributeTrailing`.
      */
-    @objc public func jsq_pinSubview(
+    public func jsq_pinSubview(
         _ subview: UIView, toEdge attribute: NSLayoutConstraint.Attribute
     ) {
         self.addConstraint(
@@ -27,7 +27,7 @@ extension UIView {
      *
      *  - parameter subview: The subview to which the receiver will be pinned.
      */
-    @objc public func jsq_pinAllEdgesOfSubview(_ subview: UIView) {
+    public func jsq_pinAllEdgesOfSubview(_ subview: UIView) {
         self.jsq_pinSubview(subview, toEdge: .bottom)
         self.jsq_pinSubview(subview, toEdge: .top)
         self.jsq_pinSubview(subview, toEdge: .leading)

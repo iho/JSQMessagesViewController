@@ -7,7 +7,7 @@ import UIKit
 /// - seealso: JSQMessageMediaData
 /// - seealso: JSQMessagesBubbleImageFactory
 /// - seealso: JSQMessagesBubbleImage
-@objc public class JSQMessagesMediaViewBubbleImageMasker: NSObject {
+public class JSQMessagesMediaViewBubbleImageMasker: NSObject {
 
     /**
      *  Returns the bubble image factory that the masker uses to mask media views.
@@ -21,7 +21,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesMediaViewBubbleImageMasker` object.
      */
-    @objc public override convenience init() {
+    public override convenience init() {
         self.init(bubbleImageFactory: JSQMessagesBubbleImageFactory())
     }
 
@@ -34,7 +34,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesMediaViewBubbleImageMasker` object.
      */
-    @objc public init(bubbleImageFactory: JSQMessagesBubbleImageFactory) {
+    public init(bubbleImageFactory: JSQMessagesBubbleImageFactory) {
         self.bubbleImageFactory = bubbleImageFactory
         super.init()
     }
@@ -44,7 +44,7 @@ import UIKit
      *
      *  - parameter mediaView: The media view to mask.
      */
-    @objc public func applyOutgoingBubbleImageMask(toMediaView mediaView: UIView) {
+    public func applyOutgoingBubbleImageMask(toMediaView mediaView: UIView) {
         let bubbleImageData = self.bubbleImageFactory.outgoingMessagesBubbleImage(
             with: UIColor.white)
         self.jsq_mask(view: mediaView, with: bubbleImageData.messageBubbleImage)
@@ -55,7 +55,7 @@ import UIKit
      *
      *  - parameter mediaView: The media view to mask.
      */
-    @objc public func applyIncomingBubbleImageMask(toMediaView mediaView: UIView) {
+    public func applyIncomingBubbleImageMask(toMediaView mediaView: UIView) {
         let bubbleImageData = self.bubbleImageFactory.incomingMessagesBubbleImage(
             with: UIColor.white)
         self.jsq_mask(view: mediaView, with: bubbleImageData.messageBubbleImage)
@@ -69,7 +69,7 @@ import UIKit
      *  - parameter isOutgoing: A boolean value specifiying whether or not the mask should be for an outgoing or incoming view.
      *  Specify `YES` for outgoing and `NO` for incoming.
      */
-    @objc public static func applyBubbleImageMask(toMediaView mediaView: UIView, isOutgoing: Bool) {
+    public static func applyBubbleImageMask(toMediaView mediaView: UIView, isOutgoing: Bool) {
         let masker = JSQMessagesMediaViewBubbleImageMasker()
         if isOutgoing {
             masker.applyOutgoingBubbleImageMask(toMediaView: mediaView)

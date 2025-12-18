@@ -13,7 +13,7 @@ public class JSQMessagesCollectionViewFlowLayoutInvalidationContext:
      *  A boolean indicating whether to empty the messages layout information cache for items and views in the layout.
      *  The default value is `false`.
      */
-    @objc public var invalidateFlowLayoutMessagesCache: Bool = false
+    public var invalidateFlowLayoutMessagesCache: Bool = false
 
     /**
      *  Creates and returns a new `JSQMessagesCollectionViewFlowLayoutInvalidationContext` object.
@@ -24,7 +24,7 @@ public class JSQMessagesCollectionViewFlowLayoutInvalidationContext:
      *
      *  - returns: An initialized invalidation context object.
      */
-    @objc public static func context() -> JSQMessagesCollectionViewFlowLayoutInvalidationContext {
+    public static func context() -> JSQMessagesCollectionViewFlowLayoutInvalidationContext {
         let context = JSQMessagesCollectionViewFlowLayoutInvalidationContext()
         context.invalidateFlowLayoutDelegateMetrics = true
         context.invalidateFlowLayoutAttributes = true

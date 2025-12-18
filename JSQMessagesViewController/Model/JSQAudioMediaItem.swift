@@ -20,11 +20,11 @@ import AVFoundation
 import Foundation
 import UIKit
 
-@objc public protocol JSQAudioMediaItemDelegate: NSObjectProtocol {
+public protocol JSQAudioMediaItemDelegate: NSObjectProtocol {
     /**
      *  Tells the delegate if the specified `JSQAudioMediaItem` changes the sound category or categoryOptions, or if an error occurs.
      */
-    @objc func audioMediaItem(
+    func audioMediaItem(
         _ audioMediaItem: JSQAudioMediaItem, didChangeAudioCategory category: String,
         options: AVAudioSession.CategoryOptions, error: Error?)
 }
@@ -33,22 +33,22 @@ import UIKit
 /// and represents an audio media message. An initialized `JSQAudioMediaItem` object can be passed
 /// to a `JSQMediaMessage` object during its initialization to construct a valid media message object.
 /// You may wish to subclass `JSQAudioMediaItem` to provide additional functionality or behavior.
-@objc public class JSQAudioMediaItem: JSQMediaItem, AVAudioPlayerDelegate {
+public class JSQAudioMediaItem: JSQMediaItem, AVAudioPlayerDelegate {
 
     /**
      *  The delegate object for audio event notifications.
      */
-    @objc public weak var delegate: JSQAudioMediaItemDelegate?
+    public weak var delegate: JSQAudioMediaItemDelegate?
 
     /**
      *  The view attributes to configure the appearance of the audio media view.
      */
-    @objc public private(set) var audioViewAttributes: JSQAudioMediaViewAttributes
+    public private(set) var audioViewAttributes: JSQAudioMediaViewAttributes
 
     /**
      *  A data object that contains an audio resource.
      */
-    @objc public var audioData: Data? {
+    public var audioData: Data? {
         didSet {
             self.cachedMediaView = nil
         }
@@ -67,7 +67,7 @@ import UIKit
      *
      *  @return An initialized `JSQAudioMediaItem`.
      */
-    @objc public init(data audioData: Data?, audioViewAttributes: JSQAudioMediaViewAttributes) {
+    public init(data audioData: Data?, audioViewAttributes: JSQAudioMediaViewAttributes) {
         self.audioData = audioData
         self.audioViewAttributes = audioViewAttributes
         super.init(maskAsOutgoing: true)
@@ -78,7 +78,7 @@ import UIKit
      *
      *  @return An initialized `JSQAudioMediaItem`.
      */
-    @objc public convenience init() {
+    public convenience init() {
         self.init(data: nil, audioViewAttributes: JSQAudioMediaViewAttributes())
     }
 
@@ -89,7 +89,7 @@ import UIKit
     
      @return  An initialized `JSQAudioMediaItem`.
      */
-    @objc public convenience init(audioViewAttributes: JSQAudioMediaViewAttributes) {
+    public convenience init(audioViewAttributes: JSQAudioMediaViewAttributes) {
         self.init(data: nil, audioViewAttributes: audioViewAttributes)
     }
 
@@ -100,11 +100,11 @@ import UIKit
      *
      *  @return An initialized `JSQAudioMediaItem`.
      */
-    @objc public convenience init(data audioData: Data?) {
+    public convenience init(data audioData: Data?) {
         self.init(data: audioData, audioViewAttributes: JSQAudioMediaViewAttributes())
     }
 
-    @objc public required init(maskAsOutgoing: Bool) {
+    public required init(maskAsOutgoing: Bool) {
         self.audioViewAttributes = JSQAudioMediaViewAttributes()
         super.init(maskAsOutgoing: maskAsOutgoing)
     }
@@ -114,7 +114,7 @@ import UIKit
      *
      *  @param audioURL A File URL containing the location of the audio data.
      */
-    @objc public func setAudioData(with url: URL) {
+    public func setAudioData(with url: URL) {
         do {
             self.audioData = try Data(contentsOf: url)
         } catch {
@@ -122,12 +122,12 @@ import UIKit
         }
     }
 
-    @objc public override func clearCachedMediaViews() {
+    public override func clearCachedMediaViews() {
         super.clearCachedMediaViews()
         self.cachedMediaView = nil
     }
 
-    @objc public override var appliesMediaViewMaskAsOutgoing: Bool {
+    public override var appliesMediaViewMaskAsOutgoing: Bool {
         didSet {
             self.cachedMediaView = nil
         }
@@ -135,7 +135,7 @@ import UIKit
 
     // MARK: - JSQMessageMediaData protocol
 
-    @objc public override func mediaView() -> UIView? {
+    public override func mediaView() -> UIView? {
         if self.audioData == nil {
             return nil
         }
@@ -163,24 +163,24 @@ import UIKit
         return self.cachedMediaView
     }
 
-    @objc public override func mediaHash() -> UInt {
+    public override func mediaHash() -> UInt {
         return UInt(bitPattern: self.hash)
     }
 
     // MARK: - NSObject
 
-    @objc public override var hash: Int {
+    public override var hash: Int {
         return super.hash ^ (self.audioData?.hashValue ?? 0)
     }
 
-    @objc public override var description: String {
+    public override var description: String {
         return
             "<\(type(of: self)): audioData=\(String(describing: self.audioData)), appliesMediaViewMaskAsOutgoing=\(self.appliesMediaViewMaskAsOutgoing)>"
     }
 
     // MARK: - NSCoding
 
-    @objc required public init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         self.audioData = aDecoder.decodeObject(forKey: "audioData") as? Data
         self.audioViewAttributes =
             aDecoder.decodeObject(forKey: "audioViewAttributes") as? JSQAudioMediaViewAttributes
@@ -188,7 +188,7 @@ import UIKit
         super.init(coder: aDecoder)
     }
 
-    @objc public override func encode(with aCoder: NSCoder) {
+    public override func encode(with aCoder: NSCoder) {
         super.encode(with: aCoder)
         aCoder.encode(self.audioData, forKey: "audioData")
         aCoder.encode(self.audioViewAttributes, forKey: "audioViewAttributes")
@@ -196,7 +196,7 @@ import UIKit
 
     // MARK: - NSCopying
 
-    @objc public override func copy(with zone: NSZone? = nil) -> Any {
+    public override func copy(with zone: NSZone? = nil) -> Any {
         let copy = JSQAudioMediaItem(
             data: self.audioData, audioViewAttributes: self.audioViewAttributes)
         copy.appliesMediaViewMaskAsOutgoing = self.appliesMediaViewMaskAsOutgoing
@@ -205,8 +205,7 @@ import UIKit
 
     // MARK: - AVAudioPlayerDelegate
 
-    @objc public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool)
-    {
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         // Handle playback finish
     }
 }

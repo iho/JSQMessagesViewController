@@ -28,12 +28,12 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
 /// and represents a location media message. An initialized `JSQLocationMediaItem` object can be passed
 /// to a `JSQMediaMessage` object during its initialization to construct a valid media message object.
 /// You may wish to subclass `JSQLocationMediaItem` to provide additional functionality or behavior.
-@objc public class JSQLocationMediaItem: JSQMediaItem, MKAnnotation {
+public class JSQLocationMediaItem: JSQMediaItem, MKAnnotation {
 
     /**
      *  The location for the media item. The default value is `nil`.
      */
-    @objc public var location: CLLocation? {
+    public var location: CLLocation? {
         didSet {
             self.cachedImageView = nil
         }
@@ -42,7 +42,7 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
     /**
      *  The coordinate of the location property.
      */
-    @objc public var coordinate: CLLocationCoordinate2D {
+    public var coordinate: CLLocationCoordinate2D {
         return self.location?.coordinate ?? kCLLocationCoordinate2DInvalid
     }
 
@@ -62,16 +62,16 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
      *  Once the location data has been retrieved, you can then set the location property
      *  using `setLocation: withCompletionHandler:`
      */
-    @objc public init(location: CLLocation?) {
+    public init(location: CLLocation?) {
         self.location = location
         super.init(maskAsOutgoing: true)
     }
 
-    @objc public required init(maskAsOutgoing: Bool) {
+    public required init(maskAsOutgoing: Bool) {
         super.init(maskAsOutgoing: maskAsOutgoing)
     }
 
-    @objc public func setLocation(
+    public func setLocation(
         _ location: CLLocation?,
         withCompletionHandler completion: JSQLocationMediaItemCompletionBlock?
     ) {
@@ -83,7 +83,7 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
             withCompletionHandler: completion)
     }
 
-    @objc public func setLocation(
+    public func setLocation(
         _ location: CLLocation?, region: MKCoordinateRegion,
         withCompletionHandler completion: JSQLocationMediaItemCompletionBlock?
     ) {
@@ -151,12 +151,12 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
         }
     }
 
-    @objc public override func clearCachedMediaViews() {
+    public override func clearCachedMediaViews() {
         super.clearCachedMediaViews()
         self.cachedImageView = nil
     }
 
-    @objc public override var appliesMediaViewMaskAsOutgoing: Bool {
+    public override var appliesMediaViewMaskAsOutgoing: Bool {
         didSet {
             self.cachedImageView = nil
         }
@@ -164,7 +164,7 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
 
     // MARK: - JSQMessageMediaData protocol
 
-    @objc public override func mediaView() -> UIView? {
+    public override func mediaView() -> UIView? {
         if self.location == nil {
             return nil
         }
@@ -189,36 +189,36 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
         return self.cachedImageView
     }
 
-    @objc public override func mediaHash() -> UInt {
+    public override func mediaHash() -> UInt {
         return UInt(bitPattern: self.hash)
     }
 
     // MARK: - NSObject
 
-    @objc public override var hash: Int {
+    public override var hash: Int {
         return super.hash ^ (self.location?.hash ?? 0)
     }
 
-    @objc public override var description: String {
+    public override var description: String {
         return
             "<\(type(of: self)): location=\(String(describing: self.location)), appliesMediaViewMaskAsOutgoing=\(self.appliesMediaViewMaskAsOutgoing)>"
     }
 
     // MARK: - NSCoding
 
-    @objc required public init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         self.location = aDecoder.decodeObject(forKey: "location") as? CLLocation
         super.init(coder: aDecoder)
     }
 
-    @objc public override func encode(with aCoder: NSCoder) {
+    public override func encode(with aCoder: NSCoder) {
         super.encode(with: aCoder)
         aCoder.encode(self.location, forKey: "location")
     }
 
     // MARK: - NSCopying
 
-    @objc public override func copy(with zone: NSZone? = nil) -> Any {
+    public override func copy(with zone: NSZone? = nil) -> Any {
         let copy = JSQLocationMediaItem(location: self.location)
         copy.appliesMediaViewMaskAsOutgoing = self.appliesMediaViewMaskAsOutgoing
         return copy

@@ -6,7 +6,7 @@ public typealias JSQMessagesVideoThumbnailCompletionBlock = (UIImage?, Error?) -
 
 /// `JSQMessagesVideoThumbnailFactory` is a factory that provides a means for generating
 /// a thumbnail image with for a `JSQVideoMediaItem`.
-@objc public class JSQMessagesVideoThumbnailFactory: NSObject {
+public class JSQMessagesVideoThumbnailFactory: NSObject {
 
     /**
      *  Generates and returns a thumbnail image for the specified video media asset
@@ -18,7 +18,7 @@ public typealias JSQMessagesVideoThumbnailCompletionBlock = (UIImage?, Error?) -
      *  - parameter asset:      The `AVURLAsset` for the video media item.
      *  - parameter completion: The block to call after the thumbnail has been generated.
      */
-    @objc public func thumbnail(
+    public func thumbnail(
         forVideoMediaAsset asset: AVURLAsset,
         completion: @escaping JSQMessagesVideoThumbnailCompletionBlock
     ) {
@@ -37,7 +37,7 @@ public typealias JSQMessagesVideoThumbnailCompletionBlock = (UIImage?, Error?) -
      *  - parameter time:       The CMTime for capturing the thumbnail image from the video asset.
      *  - parameter completion: The block to call after the thumbnail has been generated.
      */
-    @objc public func thumbnail(
+    public func thumbnail(
         forVideoMediaAsset asset: AVURLAsset, time: CMTime,
         completion: @escaping JSQMessagesVideoThumbnailCompletionBlock
     ) {

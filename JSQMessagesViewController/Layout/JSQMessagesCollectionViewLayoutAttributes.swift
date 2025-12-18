@@ -2,13 +2,13 @@ import UIKit
 
 /// A `JSQMessagesCollectionViewLayoutAttributes` is an object that manages the layout-related attributes
 /// for a given `JSQMessagesCollectionViewCell` in a `JSQMessagesCollectionView`.
-@objc public class JSQMessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
+public class JSQMessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
 
     /**
      *  The font used to display the body of a text message in a message bubble within a `JSQMessagesCollectionViewCell`.
      *  This value must not be `nil`.
      */
-    @objc public var messageBubbleFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
+    public var messageBubbleFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
 
     /**
      *  The width of the `messageBubbleContainerView` of a `JSQMessagesCollectionViewCell`.
@@ -16,7 +16,7 @@ import UIKit
      *
      *  - seealso: JSQMessagesCollectionViewCell.
      */
-    @objc public var messageBubbleContainerViewWidth: CGFloat = 320.0 {
+    public var messageBubbleContainerViewWidth: CGFloat = 320.0 {
         didSet {
             messageBubbleContainerViewWidth = ceil(messageBubbleContainerViewWidth)
         }
@@ -26,7 +26,7 @@ import UIKit
      *  The inset of the text container's layout area within the text view's content area in a `JSQMessagesCollectionViewCell`.
      *  The specified inset values should be greater than or equal to `0.0`.
      */
-    @objc public var textViewTextContainerInsets: UIEdgeInsets = .zero
+    public var textViewTextContainerInsets: UIEdgeInsets = .zero
 
     /**
      *  The inset of the frame of the text view within a `JSQMessagesCollectionViewCell`.
@@ -45,7 +45,7 @@ import UIKit
      *
      *  4. The bottom value insets the bottom of the frame.
      */
-    @objc public var textViewFrameInsets: UIEdgeInsets = .zero
+    public var textViewFrameInsets: UIEdgeInsets = .zero
 
     /**
      *  The size of the `avatarImageView` of a `JSQMessagesCollectionViewCellIncoming`.
@@ -53,7 +53,7 @@ import UIKit
      *
      *  - seealso: JSQMessagesCollectionViewCellIncoming.
      */
-    @objc public var incomingAvatarViewSize: CGSize = .zero {
+    public var incomingAvatarViewSize: CGSize = .zero {
         didSet {
             incomingAvatarViewSize = CGSize(
                 width: ceil(incomingAvatarViewSize.width),
@@ -67,7 +67,7 @@ import UIKit
      *
      *  - seealso: `JSQMessagesCollectionViewCellOutgoing`.
      */
-    @objc public var outgoingAvatarViewSize: CGSize = .zero {
+    public var outgoingAvatarViewSize: CGSize = .zero {
         didSet {
             outgoingAvatarViewSize = CGSize(
                 width: ceil(outgoingAvatarViewSize.width),
@@ -81,7 +81,7 @@ import UIKit
      *
      *  - seealso: JSQMessagesCollectionViewCell.
      */
-    @objc public var cellTopLabelHeight: CGFloat = 0.0 {
+    public var cellTopLabelHeight: CGFloat = 0.0 {
         didSet {
             cellTopLabelHeight = ceil(cellTopLabelHeight)
         }
@@ -93,7 +93,7 @@ import UIKit
      *
      *  - seealso: JSQMessagesCollectionViewCell.
      */
-    @objc public var messageBubbleTopLabelHeight: CGFloat = 0.0 {
+    public var messageBubbleTopLabelHeight: CGFloat = 0.0 {
         didSet {
             messageBubbleTopLabelHeight = ceil(messageBubbleTopLabelHeight)
         }
@@ -105,7 +105,7 @@ import UIKit
      *
      *  - seealso: JSQMessagesCollectionViewCell.
      */
-    @objc public var cellBottomLabelHeight: CGFloat = 0.0 {
+    public var cellBottomLabelHeight: CGFloat = 0.0 {
         didSet {
             cellBottomLabelHeight = ceil(cellBottomLabelHeight)
         }

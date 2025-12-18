@@ -9,7 +9,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 /// as well as metadata such as a timestamp and sender.
 /// You can easily customize the layout via its properties or its delegate methods
 /// defined in `JSQMessagesCollectionViewDelegateFlowLayout`.
-@objc public class JSQMessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
+public class JSQMessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
     /**
      *  The collection view object currently using this layout object.
@@ -17,7 +17,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     // NOTE: This property is dynamic in ObjC implementation, mirroring the superclass property but with specific type.
     // In Swift, we cast self.collectionView to JSQMessagesCollectionView where needed.
     // However, to maintain API compatibility, we can add a computed property if needed, but standard collectionView is usually sufficient.
-    @objc public var messagesCollectionView: JSQMessagesCollectionView? {
+    public var messagesCollectionView: JSQMessagesCollectionView? {
         return self.collectionView as? JSQMessagesCollectionView
     }
 
@@ -25,7 +25,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
      *  The object that the layout uses to calculate bubble sizes.
      *  The default value is an instance of `JSQMessagesBubblesSizeCalculator`.
      */
-    @objc public var bubbleSizeCalculator: JSQMessagesBubbleSizeCalculating
+    public var bubbleSizeCalculator: JSQMessagesBubbleSizeCalculating
 
     /**
      *  Specifies whether or not the layout should enable spring behavior dynamics for its items using `UIDynamics`.
@@ -34,7 +34,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
      *  Set to `YES` if you want items to have spring behavior dynamics. You *must* set this property from `viewDidAppear:`
      *  in your `JSQMessagesViewController` subclass.
      */
-    @objc public var springinessEnabled: Bool = false {
+    public var springinessEnabled: Bool = false {
         didSet {
             if oldValue == springinessEnabled { return }
 
@@ -53,12 +53,12 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
      *  - Discussion: The default value is `1000`. Increasing this value increases the resistance, that is, items become less "bouncy".
      *  Decrease this value in order to make items more "bouncy".
      */
-    @objc public var springResistanceFactor: UInt = 200
+    public var springResistanceFactor: UInt = 200
 
     /**
      *  Returns the width of items in the layout.
      */
-    @objc public var itemWidth: CGFloat {
+    public var itemWidth: CGFloat {
         guard let collectionView = self.collectionView else { return 0.0 }
         return collectionView.frame.width - self.sectionInset.left - self.sectionInset.right
     }
@@ -69,7 +69,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
      *
      *  - Discussion: The default value is the preferred system font for `UIFontTextStyleBody`. This value must not be `nil`.
      */
-    @objc public var messageBubbleFont: UIFont = .preferredFont(forTextStyle: .body) {
+    public var messageBubbleFont: UIFont = .preferredFont(forTextStyle: .body) {
         didSet {
             if oldValue == messageBubbleFont { return }
             invalidateLayout(with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
@@ -79,7 +79,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     /**
      *  The horizontal spacing used to lay out the `messageBubbleContainerView` frame within each `JSQMessagesCollectionViewCell`.
      */
-    @objc public var messageBubbleLeftRightMargin: CGFloat = 40.0 {
+    public var messageBubbleLeftRightMargin: CGFloat = 40.0 {
         didSet {
             messageBubbleLeftRightMargin = ceil(messageBubbleLeftRightMargin)
             invalidateLayout(with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
@@ -89,7 +89,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     /**
      *  The inset of the frame of the text view within the `messageBubbleContainerView` of each `JSQMessagesCollectionViewCell`.
      */
-    @objc public var messageBubbleTextViewFrameInsets: UIEdgeInsets = UIEdgeInsets(
+    public var messageBubbleTextViewFrameInsets: UIEdgeInsets = UIEdgeInsets(
         top: 0.0, left: 0.0, bottom: 0.0, right: 6.0)
     {
         didSet {
@@ -101,7 +101,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     /**
      *  The inset of the text container's layout area within the text view's content area in each `JSQMessagesCollectionViewCell`.
      */
-    @objc public var messageBubbleTextViewTextContainerInsets: UIEdgeInsets = UIEdgeInsets(
+    public var messageBubbleTextViewTextContainerInsets: UIEdgeInsets = UIEdgeInsets(
         top: 7.0, left: 14.0, bottom: 7.0, right: 14.0)
     {
         didSet {
@@ -113,7 +113,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     /**
      *  The size of the avatar image view for incoming messages.
      */
-    @objc public var incomingAvatarViewSize: CGSize = CGSize(
+    public var incomingAvatarViewSize: CGSize = CGSize(
         width: kJSQMessagesCollectionViewAvatarSizeDefault,
         height: kJSQMessagesCollectionViewAvatarSizeDefault)
     {
@@ -126,7 +126,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     /**
      *  The size of the avatar image view for outgoing messages.
      */
-    @objc public var outgoingAvatarViewSize: CGSize = CGSize(
+    public var outgoingAvatarViewSize: CGSize = CGSize(
         width: kJSQMessagesCollectionViewAvatarSizeDefault,
         height: kJSQMessagesCollectionViewAvatarSizeDefault)
     {
@@ -139,7 +139,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     /**
      *  The maximum number of items that the layout should keep in its cache of layout information.
      */
-    @objc public var cacheLimit: UInt = 200
+    public var cacheLimit: UInt = 200
 
     private var _dynamicAnimator: UIDynamicAnimator?
     private var dynamicAnimator: UIDynamicAnimator {
@@ -163,7 +163,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         return animator
     }
 
-    @objc public var debugDynamicBehaviorsCount: Int {
+    public var debugDynamicBehaviorsCount: Int {
         // Only access dynamicAnimator if springiness is enabled
         // to avoid premature initialization that can cause crashes
         guard springinessEnabled else { return 0 }
@@ -175,21 +175,23 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     }()
 
     private var latestDelta: CGFloat = 0.0
+    private var notificationTokens: [NSObjectProtocol] = []
 
-    @objc public override init() {
+    public override init() {
         self.bubbleSizeCalculator = JSQMessagesBubblesSizeCalculator()
         super.init()
         self.jsq_configureFlowLayout()
     }
 
-    @objc public required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         self.bubbleSizeCalculator = JSQMessagesBubblesSizeCalculator()
         super.init(coder: aDecoder)
         self.jsq_configureFlowLayout()
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        self.notificationTokens.forEach { NotificationCenter.default.removeObserver($0) }
+        self.notificationTokens.removeAll()
     }
 
     private func jsq_configureFlowLayout() {
@@ -216,39 +218,34 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         self.incomingAvatarViewSize = defaultAvatarSize
         self.outgoingAvatarViewSize = defaultAvatarSize
 
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(jsq_didReceiveApplicationMemoryWarningNotification(_:)),
-            name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(jsq_didReceiveDeviceOrientationDidChangeNotification(_:)),
-            name: UIDevice.orientationDidChangeNotification, object: nil)
+        let memoryWarningToken = NotificationCenter.default.addObserver(
+            forName: UIApplication.didReceiveMemoryWarningNotification, object: nil, queue: nil
+        ) { [weak self] _ in
+            self?.jsq_resetLayout()
+        }
+        self.notificationTokens.append(memoryWarningToken)
+
+        let orientationToken = NotificationCenter.default.addObserver(
+            forName: UIDevice.orientationDidChangeNotification, object: nil, queue: nil
+        ) { [weak self] _ in
+            self?.jsq_resetLayout()
+            self?.invalidateLayout(
+                with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
+        }
+        self.notificationTokens.append(orientationToken)
     }
 
-    @objc public override class var layoutAttributesClass: AnyClass {
+    public override class var layoutAttributesClass: AnyClass {
         return JSQMessagesCollectionViewLayoutAttributes.self
     }
 
-    @objc public override class var invalidationContextClass: AnyClass {
+    public override class var invalidationContextClass: AnyClass {
         return JSQMessagesCollectionViewFlowLayoutInvalidationContext.self
-    }
-
-    @objc private func jsq_didReceiveApplicationMemoryWarningNotification(
-        _ notification: Notification
-    ) {
-        self.jsq_resetLayout()
-    }
-
-    @objc private func jsq_didReceiveDeviceOrientationDidChangeNotification(
-        _ notification: Notification
-    ) {
-        self.jsq_resetLayout()
-        self.invalidateLayout(
-            with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
     }
 
     // MARK: - Collection view flow layout
 
-    @objc public override func invalidateLayout(
+    public override func invalidateLayout(
         with context: UICollectionViewLayoutInvalidationContext
     ) {
         guard let context = context as? JSQMessagesCollectionViewFlowLayoutInvalidationContext
@@ -273,7 +270,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         super.invalidateLayout(with: context)
     }
 
-    @objc public override func prepare() {
+    public override func prepare() {
         super.prepare()
 
         if self.springinessEnabled {
@@ -293,7 +290,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         }
     }
 
-    @objc public override func layoutAttributesForElements(in rect: CGRect)
+    public override func layoutAttributesForElements(in rect: CGRect)
         -> [UICollectionViewLayoutAttributes]?
     {
         // self.jsq_populateDynamicAnimatorIfNeeded() // Removed: Should only be called in prepare()
@@ -345,7 +342,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         return finalAttributes
     }
 
-    @objc public override func layoutAttributesForItem(at indexPath: IndexPath)
+    public override func layoutAttributesForItem(at indexPath: IndexPath)
         -> UICollectionViewLayoutAttributes?
     {
         let baseAttributes =
@@ -376,7 +373,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         return finalAttributes
     }
 
-    @objc public override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+    public override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         if self.springinessEnabled {
             let scrollView = self.collectionView!
             let delta = newBounds.origin.y - scrollView.bounds.origin.y
@@ -407,7 +404,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         return false
     }
 
-    @objc public override func prepare(
+    public override func prepare(
         forCollectionViewUpdates updateItems: [UICollectionViewUpdateItem]
     ) {
         super.prepare(forCollectionViewUpdates: updateItems)
@@ -455,12 +452,12 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 
     // MARK: - Invalidation utilities
 
-    @objc private func jsq_resetLayout() {
+    private func jsq_resetLayout() {
         self.bubbleSizeCalculator.prepareForResettingLayout(self)
         self.jsq_resetDynamicAnimator()
     }
 
-    @objc private func jsq_resetDynamicAnimator() {
+    private func jsq_resetDynamicAnimator() {
         if self.springinessEnabled {
             self.dynamicAnimator.removeAllBehaviors()
             self.visibleIndexPaths.removeAllObjects()
@@ -469,7 +466,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 
     // MARK: - Message cell layout utilities
 
-    @objc public func messageBubbleSizeForItem(at indexPath: IndexPath) -> CGSize {
+    public func messageBubbleSizeForItem(at indexPath: IndexPath) -> CGSize {
         guard
             let dataSource = self.collectionView?.dataSource as? JSQMessagesCollectionViewDataSource
         else { return .zero }
@@ -481,7 +478,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
             for: messageItem, at: indexPath, with: self)
     }
 
-    @objc public func sizeForItem(at indexPath: IndexPath) -> CGSize {
+    public func sizeForItem(at indexPath: IndexPath) -> CGSize {
         let messageBubbleSize = self.messageBubbleSizeForItem(at: indexPath)
         let attributes =
             self.layoutAttributesForItem(at: indexPath)
@@ -495,7 +492,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         return CGSize(width: self.itemWidth, height: ceil(finalHeight))
     }
 
-    @objc private func jsq_configureMessageCellLayoutAttributes(
+    private func jsq_configureMessageCellLayoutAttributes(
         _ layoutAttributes: JSQMessagesCollectionViewLayoutAttributes
     ) {
         let indexPath = layoutAttributes.indexPath
@@ -531,7 +528,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 
     // MARK: - Spring behavior utilities
 
-    @objc private func jsq_springBehaviorWithLayoutAttributesItem(
+    private func jsq_springBehaviorWithLayoutAttributesItem(
         _ item: UICollectionViewLayoutAttributes
     ) -> UIAttachmentBehavior? {
         if item.frame.size == .zero {
@@ -545,7 +542,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         return springBehavior
     }
 
-    @objc private func jsq_addNewlyVisibleBehaviorsFromVisibleItems(
+    private func jsq_addNewlyVisibleBehaviorsFromVisibleItems(
         _ visibleItems: [UICollectionViewLayoutAttributes]
     ) {
         let newlyVisibleItems = visibleItems.filter {
@@ -576,7 +573,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         }
     }
 
-    @objc private func jsq_removeNoLongerVisibleBehaviorsFromVisibleItemsIndexPaths(
+    private func jsq_removeNoLongerVisibleBehaviorsFromVisibleItemsIndexPaths(
         _ visibleItemsIndexPaths: Set<IndexPath>
     ) {
         let behaviors = self.dynamicAnimator.behaviors
@@ -600,7 +597,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         }
     }
 
-    @objc private func jsq_adjustSpringBehavior(
+    private func jsq_adjustSpringBehavior(
         _ springBehavior: UIAttachmentBehavior, forTouchLocation touchLocation: CGPoint
     ) {
         guard let item = springBehavior.items.first as? UICollectionViewLayoutAttributes else {

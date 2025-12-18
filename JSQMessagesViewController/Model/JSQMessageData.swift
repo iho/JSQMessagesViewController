@@ -37,21 +37,21 @@ import Foundation
      *
      *  @warning You must not return `nil` from this method. This value must be unique.
      */
-    @objc var senderId: String { get }
+    var senderId: String { get }
 
     /**
      *  @return The display name for the user who sent the message.
      *
      *  @warning You must not return `nil` from this method.
      */
-    @objc var senderDisplayName: String { get }
+    var senderDisplayName: String { get }
 
     /**
      *  @return The date that the message was sent.
      *
      *  @warning You must not return `nil` from this method.
      */
-    @objc var date: Date { get }
+    var date: Date { get }
 
     /**
      *  This method is used to determine if the message data item contains text or media.
@@ -65,7 +65,7 @@ import Foundation
      *  @return A boolean value specifying whether or not this is a media message or a text message.
      *  Return `YES` if this item is a media message, and `NO` if it is a text message.
      */
-    @objc var isMediaMessage: Bool { get }
+    var isMediaMessage: Bool { get }
 
     /**
      *  @return An integer that can be used as a table address in a hash table structure.
@@ -73,7 +73,7 @@ import Foundation
      *  @discussion This value must be unique for each message with distinct contents.
      *  This value is used to cache layout information in the collection view.
      */
-    @objc var messageHash: UInt { get }
+    var messageHash: UInt { get }
 
     /**
      *  @return The body text of the message.

@@ -5,7 +5,7 @@ import UIKit
 /// It contains a regular message bubble image and a highlighted message bubble image.
 ///
 /// - seealso: JSQMessagesBubbleImageFactory
-@objc public class JSQMessagesBubbleImage: NSObject, JSQMessageBubbleImageDataSource, NSCopying {
+public class JSQMessagesBubbleImage: NSObject, JSQMessageBubbleImageDataSource, NSCopying {
 
     /**
      *  Returns the message bubble image for a regular display state.
@@ -25,7 +25,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesBubbleImage` object.
      */
-    @objc public init(messageBubbleImage image: UIImage, highlightedImage: UIImage) {
+    public init(messageBubbleImage image: UIImage, highlightedImage: UIImage) {
         self.messageBubbleImage = image
         self.messageBubbleHighlightedImage = highlightedImage
         super.init()
@@ -36,7 +36,7 @@ import UIKit
     // Note: Implicitly implemented by properties above, but redundant definitions for Protocol witness might be needed if ObjC inference isn't perfect for properties-as-methods.
     // However, Swift properties expose getters that match the protocol requirement `func messageBubbleImage() -> UIImage`.
     // Actually, in Swift, `func foo()` requirements are satisfied by `var foo: Type` getters.
-    // But @objc protocols might expect actual methods.
+    // But  protocols might expect actual methods.
     // The ObjC protocol defined `- (UIImage *)messageBubbleImage;`
     // The Swift property `var messageBubbleImage: UIImage` generates `- (UIImage *)messageBubbleImage;` getter.
     // So this should work.

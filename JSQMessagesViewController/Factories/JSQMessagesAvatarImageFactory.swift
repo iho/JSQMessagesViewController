@@ -2,7 +2,7 @@ import UIKit
 
 /// `JSQMessagesAvatarImageFactory` is a factory that provides a means for creating and styling
 /// `JSQMessagesAvatarImage` objects to be displayed in a `JSQMessagesCollectionViewCell` of a `JSQMessagesCollectionView`.
-@objc public class JSQMessagesAvatarImageFactory: NSObject {
+public class JSQMessagesAvatarImageFactory: NSObject {
 
     private let diameter: UInt
 
@@ -12,7 +12,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImageFactory` object.
      */
-    @objc public override convenience init() {
+    public override convenience init() {
         // TODO: define kJSQMessagesCollectionViewAvatarSizeDefault elsewhere so we can remove this dependency
         // Assuming 30.0f is default or we need to access the constant which is in JSQMessagesCollectionViewFlowLayout.h (ObjC)
         // Since we are rewriting, we can hardcode or lookup.
@@ -29,7 +29,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImageFactory` object.
      */
-    @objc public init(diameter: UInt) {
+    public init(diameter: UInt) {
         self.diameter = diameter
         super.init()
     }
@@ -42,7 +42,7 @@ import UIKit
     *
     *  - returns: An initialized `JSQMessagesAvatarImage` object.
     */
-    @objc public func avatarImage(withPlaceholder placeholderImage: UIImage)
+    public func avatarImage(withPlaceholder placeholderImage: UIImage)
         -> JSQMessagesAvatarImage
     {
         let circlePlaceholderImage = self.jsq_circularImage(
@@ -60,7 +60,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImage` object.
      */
-    @objc public func avatarImage(with image: UIImage) -> JSQMessagesAvatarImage {
+    public func avatarImage(with image: UIImage) -> JSQMessagesAvatarImage {
         let avatar = self.circularAvatarImage(image)
         let highlightedAvatar = self.circularAvatarHighlightedImage(image)
 
@@ -75,7 +75,7 @@ import UIKit
      *
      *  - returns: A new image object.
      */
-    @objc public func circularAvatarImage(_ image: UIImage) -> UIImage? {
+    public func circularAvatarImage(_ image: UIImage) -> UIImage? {
         return self.jsq_circularImage(image, withHighlightedColor: nil)
     }
 
@@ -87,7 +87,7 @@ import UIKit
      *
      *  - returns: A new image object.
      */
-    @objc public func circularAvatarHighlightedImage(_ image: UIImage) -> UIImage? {
+    public func circularAvatarHighlightedImage(_ image: UIImage) -> UIImage? {
         return self.jsq_circularImage(image, withHighlightedColor: UIColor(white: 0.1, alpha: 0.3))
     }
 
@@ -102,7 +102,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesAvatarImage` object.
      */
-    @objc public func avatarImage(
+    public func avatarImage(
         withUserInitials userInitials: String, backgroundColor: UIColor, textColor: UIColor,
         font: UIFont
     ) -> JSQMessagesAvatarImage {

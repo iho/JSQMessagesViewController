@@ -6,17 +6,17 @@ import UIKit
 /// you may display this view temporarily until the media attachement is available.
 /// You should return an instance of this class from the `mediaPlaceholderView` method in
 /// the `JSQMessageMediaData` protocol.
-@objc public class JSQMessagesMediaPlaceholderView: UIView {
+public class JSQMessagesMediaPlaceholderView: UIView {
 
     /**
      *  Returns the activity indicator view for this placeholder view, or `nil` if it does not exist.
      */
-    @objc public private(set) weak var activityIndicatorView: UIActivityIndicatorView?
+    public private(set) weak var activityIndicatorView: UIActivityIndicatorView?
 
     /**
      *  Returns the image view for this placeholder view, or `nil` if it does not exist.
      */
-    @objc public private(set) weak var imageView: UIImageView?
+    public private(set) weak var imageView: UIImageView?
 
     /**
      *  Creates a media placeholder view object with a light gray background and
@@ -27,7 +27,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesMediaPlaceholderView` object.
      */
-    @objc public class func viewWithActivityIndicator() -> JSQMessagesMediaPlaceholderView {
+    public class func viewWithActivityIndicator() -> JSQMessagesMediaPlaceholderView {
         let lightGrayColor = UIColor.jsq_messageBubbleLightGray()
         // Define style based on iOS version if needed, but .white is deprecated in recent iOS versions for .medium or .large, but .white is still available or mapped.
         // Assuming iOS 13+, UIActivityIndicatorViewStyleWhite is deprecated. Use .medium or .large.
@@ -57,7 +57,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesMediaPlaceholderView` object.
      */
-    @objc public class func viewWithAttachmentIcon() -> JSQMessagesMediaPlaceholderView {
+    public class func viewWithAttachmentIcon() -> JSQMessagesMediaPlaceholderView {
         let lightGrayColor = UIColor.jsq_messageBubbleLightGray()
         let paperclip = UIImage.jsq_defaultAccessory()?.jsq_imageMasked(
             with: lightGrayColor.jsq_colorByDarkeningColor(withValue: 0.4))
@@ -78,7 +78,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesMediaPlaceholderView` object.
      */
-    @objc public init(
+    public init(
         frame: CGRect, backgroundColor: UIColor, activityIndicatorView: UIActivityIndicatorView
     ) {
         super.init(frame: frame)
@@ -102,7 +102,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesMediaPlaceholderView` object.
      */
-    @objc public init(frame: CGRect, backgroundColor: UIColor, imageView: UIImageView) {
+    public init(frame: CGRect, backgroundColor: UIColor, imageView: UIImageView) {
         super.init(frame: frame)
         self.backgroundColor = backgroundColor
         self.isUserInteractionEnabled = false

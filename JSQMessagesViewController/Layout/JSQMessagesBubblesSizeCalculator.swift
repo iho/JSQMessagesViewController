@@ -2,27 +2,27 @@ import UIKit
 
 /// An instance of `JSQMessagesBubblesSizeCalculator` is responsible for calculating
 /// message bubble sizes for an instance of `JSQMessagesCollectionViewFlowLayout`.
-@objc public class JSQMessagesBubblesSizeCalculator: NSObject, JSQMessagesBubbleSizeCalculating {
+public class JSQMessagesBubblesSizeCalculator: NSObject, JSQMessagesBubbleSizeCalculating {
 
     /**
      *  The cache used to store layout information.
      */
-    @objc public let cache: NSCache<AnyObject, AnyObject>
+    public let cache: NSCache<AnyObject, AnyObject>
 
     /**
      *  The minimum width for any given message bubble.
      */
-    @objc public let minimumBubbleWidth: UInt
+    public let minimumBubbleWidth: UInt
 
     /**
      *  Specifies whether or not to use fixed-width bubbles.
      *  If `false` (the default), then bubbles will resize when rotating to landscape.
      */
-    @objc public let usesFixedWidthBubbles: Bool
+    public let usesFixedWidthBubbles: Bool
 
-    @objc public let additionalInset: Int = 2
+    public let additionalInset: Int = 2
 
-    @objc public var layoutWidthForFixedWidthBubbles: CGFloat = 0.0
+    public var layoutWidthForFixedWidthBubbles: CGFloat = 0.0
 
     /**
      *  Initializes and returns a bubble size calculator with the given cache and minimumBubbleWidth.
@@ -34,7 +34,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesBubblesSizeCalculator`.
      */
-    @objc public init(
+    public init(
         cache: NSCache<AnyObject, AnyObject> = NSCache<AnyObject, AnyObject>(),
         minimumBubbleWidth: UInt = UInt(UIImage.jsq_bubbleCompact()?.size.width ?? 40.0),
         usesFixedWidthBubbles: Bool = false
@@ -52,11 +52,11 @@ import UIKit
 
     // MARK: - JSQMessagesBubbleSizeCalculating
 
-    @objc public func prepareForResettingLayout(_ layout: JSQMessagesCollectionViewFlowLayout) {
+    public func prepareForResettingLayout(_ layout: JSQMessagesCollectionViewFlowLayout) {
         self.cache.removeAllObjects()
     }
 
-    @objc public func messageBubbleSize(
+    public func messageBubbleSize(
         for messageData: JSQMessageData, at indexPath: IndexPath,
         with layout: JSQMessagesCollectionViewFlowLayout
     ) -> CGSize {
@@ -122,7 +122,7 @@ import UIKit
         return finalSize
     }
 
-    @objc private func jsq_avatarSize(
+    private func jsq_avatarSize(
         for messageData: JSQMessageData, with layout: JSQMessagesCollectionViewFlowLayout
     ) -> CGSize {
         let messageSender = messageData.senderId
@@ -135,7 +135,7 @@ import UIKit
         return layout.incomingAvatarViewSize
     }
 
-    @objc private func textBubbleWidth(for layout: JSQMessagesCollectionViewFlowLayout) -> CGFloat {
+    private func textBubbleWidth(for layout: JSQMessagesCollectionViewFlowLayout) -> CGFloat {
         if self.usesFixedWidthBubbles {
             return self.widthForFixedWidthBubbles(with: layout)
         }
@@ -143,7 +143,7 @@ import UIKit
         return layout.itemWidth
     }
 
-    @objc private func widthForFixedWidthBubbles(with layout: JSQMessagesCollectionViewFlowLayout)
+    private func widthForFixedWidthBubbles(with layout: JSQMessagesCollectionViewFlowLayout)
         -> CGFloat
     {
         if self.layoutWidthForFixedWidthBubbles > 0.0 {

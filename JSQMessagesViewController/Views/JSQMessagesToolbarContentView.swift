@@ -58,7 +58,7 @@ public class JSQMessagesToolbarContentView: UIView {
      *
      *  - Discussion: This property modifies the width of the leftBarButtonContainerView.
      */
-    @objc public var leftBarButtonItemWidth: CGFloat {
+    public var leftBarButtonItemWidth: CGFloat {
         get {
             return leftBarButtonContainerViewWidthConstraint.constant
         }
@@ -73,7 +73,7 @@ public class JSQMessagesToolbarContentView: UIView {
      *
      *  - Discussion: The default value is `8.0f`.
      */
-    @objc public var leftContentPadding: CGFloat {
+    public var leftContentPadding: CGFloat {
         get {
             return leftHorizontalSpacingConstraint.constant
         }
@@ -140,7 +140,7 @@ public class JSQMessagesToolbarContentView: UIView {
      *
      *  - Discussion: This property modifies the width of the rightBarButtonContainerView.
      */
-    @objc public var rightBarButtonItemWidth: CGFloat {
+    public var rightBarButtonItemWidth: CGFloat {
         get {
             return rightBarButtonContainerViewWidthConstraint.constant
         }
@@ -155,7 +155,7 @@ public class JSQMessagesToolbarContentView: UIView {
      *
      *  - Discussion: The default value is `8.0f`.
      */
-    @objc public var rightContentPadding: CGFloat {
+    public var rightContentPadding: CGFloat {
         get {
             return rightHorizontalSpacingConstraint.constant
         }
@@ -184,7 +184,7 @@ public class JSQMessagesToolbarContentView: UIView {
      *
      *  - returns: The initialized `UINib` object.
      */
-    @objc public class func nib() -> UINib {
+    public class func nib() -> UINib {
         return UINib(nibName: NSStringFromClass(self), bundle: Bundle(for: self))
     }
 

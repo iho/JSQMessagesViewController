@@ -14,11 +14,11 @@ public class JSQMessagesTypingIndicatorFooterView: UICollectionReusableView {
 
     // MARK: - Class methods
 
-    @objc public class func nib() -> UINib {
+    public class func nib() -> UINib {
         return UINib(nibName: NSStringFromClass(self), bundle: Bundle(for: self))
     }
 
-    @objc public class func footerReuseIdentifier() -> String {
+    public class func footerReuseIdentifier() -> String {
         return NSStringFromClass(self)
     }
 
@@ -39,7 +39,7 @@ public class JSQMessagesTypingIndicatorFooterView: UICollectionReusableView {
 
     // MARK: - Typing indicator
 
-    @objc public func configure(
+    public func configure(
         withEllipsisColor ellipsisColor: UIColor,
         messageBubbleColor: UIColor,
         animated: Bool,

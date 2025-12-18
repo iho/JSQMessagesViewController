@@ -3,27 +3,27 @@ import UIKit
 
 /// An instance of `JSQAudioMediaViewAttributes` specifies the appearance configuration of a `JSQAudioMediaItem`.
 /// Use this class to customize the appearance of `JSQAudioMediaItem`.
-@objc public class JSQAudioMediaViewAttributes: NSObject {
+public class JSQAudioMediaViewAttributes: NSObject {
 
     /**
      *  The image for the play button. The default is a play icon.
      */
-    @objc public var playButtonImage: UIImage
+    public var playButtonImage: UIImage
 
     /**
      *  The image for the pause button. The default is a pause icon.
      */
-    @objc public var pauseButtonImage: UIImage
+    public var pauseButtonImage: UIImage
 
     /**
      *  The font for the elapsed time label. The default is a system font.
      */
-    @objc public var labelFont: UIFont
+    public var labelFont: UIFont
 
     /**
      *  Specifies whether to show fractions of a second for audio files with a duration of less than 1 minute.
      */
-    @objc public var showFractionalSeconds: Bool
+    public var showFractionalSeconds: Bool
 
     /**
      *  The background color for the player.
@@ -31,37 +31,37 @@ import UIKit
     /**
      *  The background color for the player when the audio item is an outgoing message.
      */
-    @objc public var backgroundColorOutgoing: UIColor
+    public var backgroundColorOutgoing: UIColor
 
     /**
      *  The background color for the player when the audio item is an incoming message.
      */
-    @objc public var backgroundColorIncoming: UIColor
+    public var backgroundColorIncoming: UIColor
 
     /**
      *  The tint color for the player.
      */
-    @objc public var tintColor: UIColor
+    public var tintColor: UIColor
 
     /**
      *  Insets that sepcify the padding around the play/pause button and time label.
      */
-    @objc public var controlInsets: UIEdgeInsets
+    public var controlInsets: UIEdgeInsets
 
     /**
      *  Specifies the padding between the button, progress bar, and label.
      */
-    @objc public var controlPadding: CGFloat
+    public var controlPadding: CGFloat
 
     /**
      *  Specifies the audio category set prior to playback.
      */
-    @objc public var audioCategory: String
+    public var audioCategory: String
 
     /**
      *  Specifies the audio category options set prior to playback.
      */
-    @objc public var audioCategoryOptions: AVAudioSession.CategoryOptions
+    public var audioCategoryOptions: AVAudioSession.CategoryOptions
 
     /**
      Initializes and returns a `JSQAudioMediaViewAttributes` instance having the specified attributes.
@@ -80,7 +80,7 @@ import UIKit
     
      - returns: A new `JSQAudioMediaViewAttributes` instance
      */
-    @objc public init(
+    public init(
         playButtonImage: UIImage,
         pauseButtonImage: UIImage,
         labelFont: UIFont,
@@ -117,14 +117,14 @@ import UIKit
      *  The background color for the player.
      *  (Deprecated: Use outgoing/incoming variants)
      */
-    @objc public var backgroundColor: UIColor
+    public var backgroundColor: UIColor
 
     /**
      Initializes and returns a default `JSQAudioMediaViewAttributes` instance.
     
      - returns: A new `JSQAudioMediaViewAttributes` instance
      */
-    @objc public override convenience init() {
+    public override convenience init() {
         let tintColor = UIColor.jsq_messageBubbleBlue()
         let options: AVAudioSession.CategoryOptions = [
             .duckOthers, .defaultToSpeaker,

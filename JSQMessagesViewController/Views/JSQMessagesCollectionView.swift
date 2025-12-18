@@ -11,7 +11,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
      *  The object that provides the data for the collection view.
      *  The data source must adopt the `JSQMessagesCollectionViewDataSource` protocol.
      */
-    @objc public weak var messagesDataSource: JSQMessagesCollectionViewDataSource? {
+    public weak var messagesDataSource: JSQMessagesCollectionViewDataSource? {
         didSet {
             super.dataSource = messagesDataSource
         }
@@ -21,8 +21,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
      *  The object that acts as the delegate of the collection view.
      *  The delegate must adopt the `JSQMessagesCollectionViewDelegateFlowLayout` protocol.
      */
-    @objc public weak var messagesCollectionViewDelegate:
-        JSQMessagesCollectionViewDelegateFlowLayout?
+    public weak var messagesCollectionViewDelegate: JSQMessagesCollectionViewDelegateFlowLayout?
     {
         didSet {
             super.delegate = messagesCollectionViewDelegate
@@ -33,12 +32,12 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
      *  The object that handles accessory actions for the collection view.
      *  It must adopt the `JSQMessagesViewAccessoryButtonDelegate` protocol.
      */
-    @objc public weak var accessoryDelegate: JSQMessagesViewAccessoryButtonDelegate?
+    public weak var accessoryDelegate: JSQMessagesViewAccessoryButtonDelegate?
 
     /**
      *  The layout used to organize the collection view’s items.
      */
-    @objc public var messagesCollectionViewLayout: JSQMessagesCollectionViewFlowLayout {
+    public var messagesCollectionViewLayout: JSQMessagesCollectionViewFlowLayout {
         get {
             return super.collectionViewLayout as! JSQMessagesCollectionViewFlowLayout
         }
@@ -56,12 +55,12 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
      *  - Discussion: If your `JSQMessagesViewController` subclass displays messages for right-to-left
      *  languages, such as Arabic, set this property to `false`.
      */
-    @objc public var typingIndicatorDisplaysOnLeft: Bool = true
+    public var typingIndicatorDisplaysOnLeft: Bool = true
 
     /**
      *  The color of the typing indicator message bubble. The default value is a light gray color.
      */
-    @objc public var typingIndicatorMessageBubbleColor: UIColor =
+    public var typingIndicatorMessageBubbleColor: UIColor =
         UIColor.jsq_messageBubbleLightGray()
     {
         didSet {
@@ -73,12 +72,12 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
     /**
      *  The color of the typing indicator ellipsis. The default value is a dark gray color.
      */
-    @objc public var typingIndicatorEllipsisColor: UIColor
+    public var typingIndicatorEllipsisColor: UIColor
 
     /**
      *  The color of the text in the load earlier messages header. The default value is a bright blue color.
      */
-    @objc public var loadEarlierMessagesHeaderTextColor: UIColor = UIColor.jsq_messageBubbleBlue()
+    public var loadEarlierMessagesHeaderTextColor: UIColor = UIColor.jsq_messageBubbleBlue()
 
     public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         self.typingIndicatorEllipsisColor = UIColor.jsq_messageBubbleLightGray()
@@ -133,7 +132,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
 
     // MARK: - Typing indicator
 
-    @objc public func dequeueTypingIndicatorFooterView(for indexPath: IndexPath)
+    public func dequeueTypingIndicatorFooterView(for indexPath: IndexPath)
         -> JSQMessagesTypingIndicatorFooterView
     {
         let footerView =
@@ -152,7 +151,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
 
     // MARK: - Load earlier messages header
 
-    @objc public func dequeueLoadEarlierMessagesViewHeader(for indexPath: IndexPath)
+    public func dequeueLoadEarlierMessagesViewHeader(for indexPath: IndexPath)
         -> JSQMessagesLoadEarlierHeaderView
     {
         let headerView =
@@ -169,7 +168,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
 
     // MARK: - Load earlier messages header delegate
 
-    @objc public func headerView(
+    public func headerView(
         _ headerView: JSQMessagesLoadEarlierHeaderView, didPressLoadButton sender: UIButton
     ) {
         (delegate as? JSQMessagesCollectionViewDelegateFlowLayout)?.collectionView?(
@@ -178,14 +177,13 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
 
     // MARK: - Messages collection view cell delegate
 
-    @objc public func messagesCollectionViewCellDidTapAvatar(_ cell: JSQMessagesCollectionViewCell)
-    {
+    public func messagesCollectionViewCellDidTapAvatar(_ cell: JSQMessagesCollectionViewCell) {
         guard let indexPath = self.indexPath(for: cell) else { return }
         (delegate as? JSQMessagesCollectionViewDelegateFlowLayout)?.collectionView?(
             self, didTapAvatarImageView: cell.avatarImageView, at: indexPath)
     }
 
-    @objc public func messagesCollectionViewCellDidTapMessageBubble(
+    public func messagesCollectionViewCellDidTapMessageBubble(
         _ cell: JSQMessagesCollectionViewCell
     ) {
         guard let indexPath = self.indexPath(for: cell) else { return }
@@ -193,7 +191,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
             self, didTapMessageBubbleAt: indexPath)
     }
 
-    @objc public func messagesCollectionViewCellDidTapCell(
+    public func messagesCollectionViewCellDidTapCell(
         _ cell: JSQMessagesCollectionViewCell, atPosition position: CGPoint
     ) {
         guard let indexPath = self.indexPath(for: cell) else { return }
@@ -201,7 +199,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
             self, didTapCellAt: indexPath, touchLocation: position)
     }
 
-    @objc public func messagesCollectionViewCell(
+    public func messagesCollectionViewCell(
         _ cell: JSQMessagesCollectionViewCell, didPerformAction action: Selector,
         withSender sender: Any?
     ) {
@@ -220,7 +218,7 @@ public class JSQMessagesCollectionView: UICollectionView, JSQMessagesCollectionV
             self, performAction: action, forItemAt: indexPath, withSender: sender)
     }
 
-    @objc public func messagesCollectionViewCellDidTapAccessoryButton(
+    public func messagesCollectionViewCellDidTapAccessoryButton(
         _ cell: JSQMessagesCollectionViewCell
     ) {
         guard let indexPath = self.indexPath(for: cell) else { return }

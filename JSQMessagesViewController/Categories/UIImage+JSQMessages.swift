@@ -9,7 +9,7 @@ extension UIImage {
      *
      *  - returns: A new image object masked with the specified color.
      */
-    @objc public func jsq_imageMasked(with color: UIColor) -> UIImage? {
+    public func jsq_imageMasked(with color: UIColor) -> UIImage? {
         let imageRect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
 
         UIGraphicsBeginImageContextWithOptions(imageRect.size, false, self.scale)
@@ -41,28 +41,28 @@ extension UIImage {
     /**
      *  - Returns: The regular message bubble image.
      */
-    @objc public static func jsq_bubbleRegular() -> UIImage? {
+    public static func jsq_bubbleRegular() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "bubble_regular")
     }
 
     /**
      *  - Returns: The regular message bubble image without a tail.
      */
-    @objc public static func jsq_bubbleRegularTailless() -> UIImage? {
+    public static func jsq_bubbleRegularTailless() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "bubble_tailless")
     }
 
     /**
      *  - Returns: The regular message bubble image stroked, not filled.
      */
-    @objc public static func jsq_bubbleRegularStroked() -> UIImage? {
+    public static func jsq_bubbleRegularStroked() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "bubble_stroked")
     }
 
     /**
      *  - Returns: The regular message bubble image stroked, not filled and without a tail.
      */
-    @objc public static func jsq_bubbleRegularStrokedTailless() -> UIImage? {
+    public static func jsq_bubbleRegularStrokedTailless() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "bubble_stroked_tailless")
     }
 
@@ -71,42 +71,42 @@ extension UIImage {
      *
      *  - Discussion: This is the default bubble image used by `JSQMessagesBubbleImageFactory`.
      */
-    @objc public static func jsq_bubbleCompact() -> UIImage? {
+    public static func jsq_bubbleCompact() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "bubble_min")
     }
 
     /**
      *  - Returns: The compact message bubble image without a tail.
      */
-    @objc public static func jsq_bubbleCompactTailless() -> UIImage? {
+    public static func jsq_bubbleCompactTailless() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "bubble_min_tailless")
     }
 
     /**
      *  - Returns: The default input toolbar accessory image.
      */
-    @objc public static func jsq_defaultAccessory() -> UIImage? {
+    public static func jsq_defaultAccessory() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "clip")
     }
 
     /**
      *  - Returns: The default typing indicator image.
      */
-    @objc public static func jsq_defaultTypingIndicator() -> UIImage? {
+    public static func jsq_defaultTypingIndicator() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "typing")
     }
 
     /**
      *  - Returns: The default play icon image.
      */
-    @objc public static func jsq_defaultPlay() -> UIImage? {
+    public static func jsq_defaultPlay() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "play")
     }
 
     /**
      *  - Returns: The default pause icon image.
      */
-    @objc public static func jsq_defaultPause() -> UIImage? {
+    public static func jsq_defaultPause() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "pause")
     }
 
@@ -115,7 +115,7 @@ extension UIImage {
      *
      *  - Discussion: This is the default icon for the message accessory button.
      */
-    @objc public static func jsq_shareAction() -> UIImage? {
+    public static func jsq_shareAction() -> UIImage? {
         return UIImage.jsq_bubbleImage(fromBundleWithName: "share")
     }
 }

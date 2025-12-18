@@ -2,7 +2,7 @@ import UIKit
 
 /// `JSQMessagesLabel` is a subclass of `UILabel` that adds support for a `textInsets` property,
 /// which is similar to the `textContainerInset` property of `UITextView`.
-@objc public class JSQMessagesLabel: UILabel {
+public class JSQMessagesLabel: UILabel {
 
     /**
      *  The inset of the text layout area within the label's content area. The default value is `UIEdgeInsetsZero`.
@@ -10,7 +10,7 @@ import UIKit
      *  - Discussion: This property provides text margins for the text laid out in the label.
      *  The inset values provided must be greater than or equal to `0.0`.
      */
-    @objc public var textInsets: UIEdgeInsets = .zero {
+    public var textInsets: UIEdgeInsets = .zero {
         didSet {
             if textInsets != oldValue {
                 self.setNeedsDisplay()

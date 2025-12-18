@@ -1,6 +1,6 @@
 import UIKit
 
-@objc public enum JSQMessagesInputSendButtonLocation: UInt {
+public enum JSQMessagesInputSendButtonLocation: UInt {
     case none
     case right
     case left
@@ -8,7 +8,7 @@ import UIKit
 
 /// The `JSQMessagesInputToolbarDelegate` protocol defines methods for interacting with
 /// a `JSQMessagesInputToolbar` object.
-@objc public protocol JSQMessagesInputToolbarDelegate: UIToolbarDelegate {
+public protocol JSQMessagesInputToolbarDelegate: UIToolbarDelegate {
 
     /**
      *  Tells the delegate that the toolbar's `rightBarButtonItem` has been pressed.
@@ -31,18 +31,18 @@ import UIKit
 
 /// An instance of `JSQMessagesInputToolbar` defines the input toolbar for
 /// composing a new message. It is displayed above and follow the movement of the system keyboard.
-@objc public class JSQMessagesInputToolbar: UIToolbar {
+public class JSQMessagesInputToolbar: UIToolbar {
 
     /**
      *  The object that acts as the delegate of the toolbar.
      */
     // Ignoring the warning about hiding inherited delegate for now, as we want to refine the protocol
-    @objc public weak var messagesToolbarDelegate: (any JSQMessagesInputToolbarDelegate)?
+    public weak var messagesToolbarDelegate: (any JSQMessagesInputToolbarDelegate)?
 
     /**
      *  Returns the content view of the toolbar. This view contains all subviews of the toolbar.
      */
-    @objc public private(set) weak var contentView: JSQMessagesToolbarContentView!
+    public private(set) weak var contentView: JSQMessagesToolbarContentView!
 
     /**
      *  Indicates the location of the send button in the toolbar.
@@ -55,7 +55,7 @@ import UIKit
      *  It only specifies whether the `rightBarButtonItem` or the `leftBarButtonItem` is the send button or there is no send button.
      *  The other button then acts as the accessory button.
      */
-    @objc public var sendButtonLocation: JSQMessagesInputSendButtonLocation = .right {
+    public var sendButtonLocation: JSQMessagesInputSendButtonLocation = .right {
         didSet {
             updateSendButtonEnabledState()
         }
@@ -68,7 +68,7 @@ import UIKit
      *  - Discussion: If `true`, the send button will be enabled if the `textView` contains text. Otherwise,
      *  you are responsible for determining when to enable/disable the send button.
      */
-    @objc public var enablesSendButtonAutomatically: Bool = true {
+    public var enablesSendButtonAutomatically: Bool = true {
         didSet {
             updateSendButtonEnabledState()
         }
@@ -77,14 +77,15 @@ import UIKit
     /**
      *  Specifies the default (minimum) height for the toolbar. The default value is `44.0f`. This value must be positive.
      */
-    @objc public var preferredDefaultHeight: CGFloat = 44.0
+    public var preferredDefaultHeight: CGFloat = 44.0
 
     /**
      *  Specifies the maximum height for the toolbar. The default value is `NSNotFound`, which specifies no maximum height.
      */
-    @objc public var maximumHeight: UInt = UInt(NSNotFound)
+    public var maximumHeight: UInt = UInt(NSNotFound)
 
     private var jsq_isObserving: Bool = false
+    private var textChangeToken: NSObjectProtocol?
 
     // MARK: - Initialization
 
@@ -113,9 +114,14 @@ import UIKit
 
         updateSendButtonEnabledState()
 
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(textViewTextDidChangeNotification(_:)),
-            name: UITextView.textDidChangeNotification, object: self.contentView.textView)
+        updateSendButtonEnabledState()
+
+        self.textChangeToken = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidChangeNotification, object: self.contentView.textView,
+            queue: nil
+        ) { [weak self] _ in
+            self?.updateSendButtonEnabledState()
+        }
     }
 
     /**
@@ -125,7 +131,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesToolbarContentView`.
      */
-    @objc open func loadToolbarContentView() -> JSQMessagesToolbarContentView {
+    open func loadToolbarContentView() -> JSQMessagesToolbarContentView {
         let nibArgs = Bundle(for: JSQMessagesInputToolbar.self).loadNibNamed(
             NSStringFromClass(JSQMessagesToolbarContentView.self), owner: nil, options: nil)
         return nibArgs!.first as! JSQMessagesToolbarContentView
@@ -133,7 +139,9 @@ import UIKit
 
     deinit {
         jsq_removeObservers()
-        NotificationCenter.default.removeObserver(self)
+        if let token = self.textChangeToken {
+            NotificationCenter.default.removeObserver(token)
+        }
     }
 
     // MARK: - Actions
@@ -172,9 +180,8 @@ import UIKit
 
     // MARK: - Notifications
 
-    @objc func textViewTextDidChangeNotification(_ notification: Notification) {
-        updateSendButtonEnabledState()
-    }
+    // MARK: - Notifications
+    // Removed textViewTextDidChangeNotification in favor of closure
 
     // MARK: - Key-value observing
 
@@ -220,8 +227,8 @@ import UIKit
         if jsq_isObserving { return }
 
         // We use NSStringFromSelector to get the string compatible efficiently?
-        // Actually just hardcoding or using #selector is better but #selector(getter:...) requires @objc property.
-        // JSQMessagesToolbarContentView properties are @objc dynamic.
+        // Actually just hardcoding or using #selector is better but #selector(getter:...) requires  property.
+        // JSQMessagesToolbarContentView properties are  dynamic.
 
         self.contentView.addObserver(
             self, forKeyPath: "leftBarButtonItem", options: [],

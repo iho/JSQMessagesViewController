@@ -13,7 +13,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
 
     // MARK: - Properties
 
-    @objc open var senderId: String {
+    open var senderId: String {
         NSException(
             name: .internalInconsistencyException,
             reason:
@@ -23,7 +23,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         return ""
     }
 
-    @objc open var senderDisplayName: String {
+    open var senderDisplayName: String {
         NSException(
             name: .internalInconsistencyException,
             reason:
@@ -33,13 +33,13 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         return ""
     }
 
-    @objc open var automaticallyScrollsToMostRecentMessage: Bool = true
-    @objc open var outgoingCellIdentifier: String?
-    @objc open var outgoingMediaCellIdentifier: String?
-    @objc open var incomingCellIdentifier: String?
-    @objc open var incomingMediaCellIdentifier: String?
+    open var automaticallyScrollsToMostRecentMessage: Bool = true
+    open var outgoingCellIdentifier: String?
+    open var outgoingMediaCellIdentifier: String?
+    open var incomingCellIdentifier: String?
+    open var incomingMediaCellIdentifier: String?
 
-    @objc open var showTypingIndicator: Bool = false {
+    open var showTypingIndicator: Bool = false {
         didSet {
             if oldValue == showTypingIndicator { return }
             collectionView?.collectionViewLayout.invalidateLayout(
@@ -48,7 +48,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    @objc open var showLoadEarlierMessagesHeader: Bool = false {
+    open var showLoadEarlierMessagesHeader: Bool = false {
         didSet {
             if oldValue == showLoadEarlierMessagesHeader { return }
             collectionView?.collectionViewLayout.invalidateLayout(
@@ -58,7 +58,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    @objc open var additionalContentInset: UIEdgeInsets = .zero {
+    open var additionalContentInset: UIEdgeInsets = .zero {
         didSet {
             jsq_updateCollectionViewInsets()
         }
@@ -68,13 +68,16 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
     private var toolbarHeightConstraint: NSLayoutConstraint?
     private var selectedIndexPathForMenu: IndexPath?
 
+    private var notificationTokens: [NSObjectProtocol] = []
+    private var jsq_isHandlingMenuShow: Bool = false
+
     // MARK: - Class Methods
 
-    @objc open class func nib() -> UINib {
+    open class func nib() -> UINib {
         return UINib(nibName: NSStringFromClass(self), bundle: Bundle(for: self))
     }
 
-    @objc open class func messagesViewController() -> JSQMessagesViewController {
+    open class func messagesViewController() -> JSQMessagesViewController {
         return self.init(nibName: NSStringFromClass(self), bundle: Bundle(for: self))
     }
 
@@ -251,7 +254,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
 
     // MARK: - Actions
 
-    @objc open func didPressSendButton(
+    open func didPressSendButton(
         _ button: UIButton, withMessageText text: String, senderId: String,
         senderDisplayName: String, date: Date
     ) {
@@ -263,7 +266,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         ).raise()
     }
 
-    @objc open func didPressAccessoryButton(_ sender: UIButton) {
+    open func didPressAccessoryButton(_ sender: UIButton) {
         NSException(
             name: .internalInconsistencyException,
             reason:
@@ -272,7 +275,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         ).raise()
     }
 
-    @objc open func finishSendingMessage(animated: Bool = true) {
+    open func finishSendingMessage(animated: Bool = true) {
         guard let textView = inputToolbar.contentView.textView else { return }
 
         textView.text = nil
@@ -320,7 +323,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    @objc open func finishReceivingMessage(animated: Bool = true) {
+    open func finishReceivingMessage(animated: Bool = true) {
         self.showTypingIndicator = false
 
         let oldCount = collectionView.numberOfItems(inSection: 0)
@@ -367,7 +370,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
                 forKey: "new_message_received_accessibility_announcement"))
     }
 
-    @objc open func scrollToBottom(animated: Bool) {
+    open func scrollToBottom(animated: Bool) {
         if collectionView.numberOfSections == 0 { return }
 
         let items = collectionView.numberOfItems(inSection: 0)
@@ -377,7 +380,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         scrollToIndexPath(lastCell, animated: animated)
     }
 
-    @objc open func scrollToIndexPath(_ indexPath: IndexPath, animated: Bool) {
+    open func scrollToIndexPath(_ indexPath: IndexPath, animated: Bool) {
         if collectionView.numberOfSections <= indexPath.section { return }
 
         let numberOfItems = collectionView.numberOfItems(inSection: indexPath.section)
@@ -408,7 +411,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         collectionView.scrollToItem(at: safeIndexPath, at: scrollPosition, animated: animated)
     }
 
-    @objc open func isOutgoingMessage(_ messageItem: any JSQMessageData) -> Bool {
+    open func isOutgoingMessage(_ messageItem: any JSQMessageData) -> Bool {
         return messageItem.senderId == self.senderId
     }
 
@@ -440,15 +443,19 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
 
         let cellIdentifier: String
         if isMedia {
-            cellIdentifier = isOutgoing
+            cellIdentifier =
+                isOutgoing
                 ? (outgoingMediaCellIdentifier
                     ?? JSQMessagesCollectionViewCellOutgoing.mediaCellReuseIdentifier())
                 : (incomingMediaCellIdentifier
                     ?? JSQMessagesCollectionViewCellIncoming.mediaCellReuseIdentifier())
         } else {
-            cellIdentifier = isOutgoing
-                ? (outgoingCellIdentifier ?? JSQMessagesCollectionViewCellOutgoing.cellReuseIdentifier())
-                : (incomingCellIdentifier ?? JSQMessagesCollectionViewCellIncoming.cellReuseIdentifier())
+            cellIdentifier =
+                isOutgoing
+                ? (outgoingCellIdentifier
+                    ?? JSQMessagesCollectionViewCellOutgoing.cellReuseIdentifier())
+                : (incomingCellIdentifier
+                    ?? JSQMessagesCollectionViewCellIncoming.cellReuseIdentifier())
         }
 
         let cell =
@@ -833,33 +840,47 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
     // MARK: - Notifications
 
     private func jsq_registerForNotifications(_ register: Bool) {
-        let center = NotificationCenter.default
         if register {
-            center.addObserver(
-                self, selector: #selector(jsq_didReceiveKeyboardWillChangeFrameNotification(_:)),
-                name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-            center.addObserver(
-                self, selector: #selector(didReceiveMenuWillShowNotification(_:)),
-                name: UIMenuController.willShowMenuNotification, object: nil)
-            center.addObserver(
-                self, selector: #selector(didReceiveMenuWillHideNotification(_:)),
-                name: UIMenuController.willHideMenuNotification, object: nil)
-            center.addObserver(
-                self, selector: #selector(preferredContentSizeChanged(_:)),
-                name: UIContentSizeCategory.didChangeNotification, object: nil)
+            let center = NotificationCenter.default
+
+            // Keyboard
+            let keyboardToken = center.addObserver(
+                forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: nil,
+                using: { [weak self] notification in
+                    self?.jsq_didReceiveKeyboardWillChangeFrameNotification(notification)
+                })
+            notificationTokens.append(keyboardToken)
+
+            // Menu Show
+            let menuShowToken = center.addObserver(
+                forName: UIMenuController.willShowMenuNotification, object: nil, queue: nil,
+                using: { [weak self] notification in
+                    self?.jsq_didReceiveMenuWillShowNotification(notification)
+                })
+            notificationTokens.append(menuShowToken)
+
+            // Menu Hide
+            let menuHideToken = center.addObserver(
+                forName: UIMenuController.willHideMenuNotification, object: nil, queue: nil,
+                using: { [weak self] notification in
+                    self?.jsq_didReceiveMenuWillHideNotification(notification)
+                })
+            notificationTokens.append(menuHideToken)
+
+            // Content Size
+            let contentResultToken = center.addObserver(
+                forName: UIContentSizeCategory.didChangeNotification, object: nil, queue: nil,
+                using: { [weak self] notification in
+                    self?.jsq_preferredContentSizeChanged(notification)
+                })
+            notificationTokens.append(contentResultToken)
         } else {
-            center.removeObserver(
-                self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-            center.removeObserver(
-                self, name: UIMenuController.willShowMenuNotification, object: nil)
-            center.removeObserver(
-                self, name: UIMenuController.willHideMenuNotification, object: nil)
-            center.removeObserver(
-                self, name: UIContentSizeCategory.didChangeNotification, object: nil)
+            notificationTokens.forEach { NotificationCenter.default.removeObserver($0) }
+            notificationTokens.removeAll()
         }
     }
 
-    @objc func jsq_didReceiveKeyboardWillChangeFrameNotification(_ notification: Notification) {
+    private func jsq_didReceiveKeyboardWillChangeFrameNotification(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
             let keyboardEndFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?
                 .cgRectValue
@@ -881,14 +902,15 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
             }, completion: nil)
     }
 
-    @objc func didReceiveMenuWillShowNotification(_ notification: Notification) {
+    private func jsq_didReceiveMenuWillShowNotification(_ notification: Notification) {
+        if jsq_isHandlingMenuShow { return }
+
         guard let selectedIndexPath = selectedIndexPathForMenu,
             let menu = notification.object as? UIMenuController
         else { return }
 
-        NotificationCenter.default.removeObserver(
-            self, name: UIMenuController.willShowMenuNotification, object: nil)
-
+        // Logic handled by flag instead of remove/add observer
+        jsq_isHandlingMenuShow = true
         menu.setMenuVisible(false, animated: false)
 
         if let selectedCell = collectionView.cellForItem(at: selectedIndexPath)
@@ -899,13 +921,10 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
             menu.setTargetRect(selectedCellMessageBubbleFrame, in: self.view)
             menu.setMenuVisible(true, animated: true)
         }
-
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(didReceiveMenuWillShowNotification(_:)),
-            name: UIMenuController.willShowMenuNotification, object: nil)
+        jsq_isHandlingMenuShow = false
     }
 
-    @objc func didReceiveMenuWillHideNotification(_ notification: Notification) {
+    private func jsq_didReceiveMenuWillHideNotification(_ notification: Notification) {
         guard let selectedIndexPath = selectedIndexPathForMenu else { return }
 
         if let selectedCell = collectionView.cellForItem(at: selectedIndexPath)
@@ -916,7 +935,7 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         selectedIndexPathForMenu = nil
     }
 
-    @objc func preferredContentSizeChanged(_ notification: Notification) {
+    private func jsq_preferredContentSizeChanged(_ notification: Notification) {
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.setNeedsLayout()
     }

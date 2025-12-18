@@ -3,31 +3,31 @@ import UIKit
 /// An instance of `JSQMessagesTimestampFormatter` is a singleton object that provides an efficient means
 /// for creating attributed and non-attributed string representations of `NSDate` objects.
 /// It is intended to be used as the method by which you display timestamps in a `JSQMessagesCollectionView`.
-@objc public class JSQMessagesTimestampFormatter: NSObject {
+public class JSQMessagesTimestampFormatter: NSObject {
 
     /**
      *  Returns the shared timestamp formatter object.
      */
-    @objc public static let sharedFormatter = JSQMessagesTimestampFormatter()
+    public static let sharedFormatter = JSQMessagesTimestampFormatter()
 
     /**
      *  Returns the cached date formatter object used by the `JSQMessagesTimestampFormatter` shared instance.
      */
-    @objc public let dateFormatter: DateFormatter
+    public let dateFormatter: DateFormatter
 
     /**
      *  The text attributes to apply to the day, month, and year components of the string representation of a given date.
      *  The default value is a dictionary containing attributes that specify centered, light gray text and `UIFontTextStyleBody` font.
      */
-    @objc public var dateTextAttributes: [NSAttributedString.Key: Any]
+    public var dateTextAttributes: [NSAttributedString.Key: Any]
 
     /**
      *  The text attributes to apply to the minute and hour componenents of the string representation of a given date.
      *  The default value is a dictionary containing attributes that specify centered, light gray text and `UIFontTextStyleBody` font.
      */
-    @objc public var timeTextAttributes: [NSAttributedString.Key: Any]
+    public var timeTextAttributes: [NSAttributedString.Key: Any]
 
-    @objc private override init() {
+    private override init() {
         self.dateFormatter = DateFormatter()
         self.dateFormatter.locale = Locale.current
         self.dateFormatter.doesRelativeDateFormatting = true
@@ -51,7 +51,7 @@ import UIKit
      *
      *  - returns: A formatted string representation of date.
      */
-    @objc public func timestamp(for date: Date?) -> String? {
+    public func timestamp(for date: Date?) -> String? {
         guard let date = date else { return nil }
 
         self.dateFormatter.dateStyle = .medium
@@ -67,7 +67,7 @@ import UIKit
      *
      *  - returns: A formatted, attributed string representation of date.
      */
-    @objc public func attributedTimestamp(for date: Date?) -> NSAttributedString? {
+    public func attributedTimestamp(for date: Date?) -> NSAttributedString? {
         guard let date = date else { return nil }
 
         guard let relativeDate = self.relativeDate(for: date),
@@ -89,7 +89,7 @@ import UIKit
      *
      *  - returns: A formatted string representation of the minute and hour components of date.
      */
-    @objc public func time(for date: Date?) -> String? {
+    public func time(for date: Date?) -> String? {
         guard let date = date else { return nil }
 
         self.dateFormatter.dateStyle = .none
@@ -104,7 +104,7 @@ import UIKit
      *
      *  - returns: A formatted string representation of the day, month, and year components of date.
      */
-    @objc public func relativeDate(for date: Date?) -> String? {
+    public func relativeDate(for date: Date?) -> String? {
         guard let date = date else { return nil }
 
         self.dateFormatter.dateStyle = .medium

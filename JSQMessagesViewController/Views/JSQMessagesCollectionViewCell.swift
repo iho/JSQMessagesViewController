@@ -62,7 +62,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
     /**
      *  The object that acts as the delegate for the cell.
      */
-    @objc public weak var delegate: JSQMessagesCollectionViewCellDelegate?
+    public weak var delegate: JSQMessagesCollectionViewCellDelegate?
 
     /**
      *  Returns the label that is pinned to the top of the cell.
@@ -136,7 +136,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
      *
      *  - Warning: If this value is non-nil, then textView and messageBubbleImageView will both be `nil`.
      */
-    @objc public var mediaView: UIView? {
+    public var mediaView: UIView? {
         didSet {
             guard let mediaView = mediaView else { return }
 
@@ -167,7 +167,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
      *  Returns the underlying gesture recognizer for tap gestures in the avatarImageView of the cell.
      *  This gesture handles the tap event for the avatarImageView and notifies the cell's delegate.
      */
-    @objc public weak var tapGestureRecognizer: UITapGestureRecognizer?
+    public weak var tapGestureRecognizer: UITapGestureRecognizer?
 
     @IBOutlet private weak var messageBubbleContainerWidthConstraint: NSLayoutConstraint!
     @IBOutlet private weak var textViewTopVerticalSpaceConstraint: NSLayoutConstraint!
@@ -183,7 +183,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
     @IBOutlet private weak var avatarContainerViewHeightConstraint: NSLayoutConstraint!
 
     private var _textViewFrameInsets: UIEdgeInsets = .zero
-    @objc public var textViewFrameInsets: UIEdgeInsets {
+    public var textViewFrameInsets: UIEdgeInsets {
         get {
             return UIEdgeInsets(
                 top: textViewTopVerticalSpaceConstraint.constant,
@@ -205,7 +205,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
     }
 
     private var _avatarViewSize: CGSize = .zero
-    @objc public var avatarViewSize: CGSize {
+    public var avatarViewSize: CGSize {
         get {
             return CGSize(
                 width: avatarContainerViewWidthConstraint.constant,
@@ -224,7 +224,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
      *
      *  - returns: The initialized `UINib` object.
      */
-    @objc public class func nib() -> UINib {
+    public class func nib() -> UINib {
         // NSStringFromClass(self) with @objc(Name) returns Name.
         return UINib(nibName: NSStringFromClass(self), bundle: Bundle(for: self))
     }
@@ -234,7 +234,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
      *
      *  - returns: The string used to identify a reusable cell.
      */
-    @objc public class func cellReuseIdentifier() -> String {
+    public class func cellReuseIdentifier() -> String {
         return NSStringFromClass(self)
     }
 
@@ -243,7 +243,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
      *
      *  - returns: The string used to identify a reusable cell.
      */
-    @objc public class func mediaCellReuseIdentifier() -> String {
+    public class func mediaCellReuseIdentifier() -> String {
         return NSStringFromClass(self) + "_JSQMedia"
     }
 
@@ -252,7 +252,7 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
     // Note: In Swift, dynamic registration of actions via forwardInvocation is not supported.
     // Actions are handled via UICollectionViewDelegate methods in the controller.
     @available(*, deprecated, message: "Use UICollectionViewDelegate methods to handle actions.")
-    @objc public class func registerMenuAction(_ action: Selector) {
+    public class func registerMenuAction(_ action: Selector) {
         // No-op
     }
 

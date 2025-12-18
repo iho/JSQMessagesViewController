@@ -15,11 +15,11 @@ public class JSQMessagesLoadEarlierHeaderView: UICollectionReusableView {
 
     // MARK: - Class methods
 
-    @objc public class func nib() -> UINib {
+    public class func nib() -> UINib {
         return UINib(nibName: NSStringFromClass(self), bundle: Bundle(for: self))
     }
 
-    @objc public class func headerReuseIdentifier() -> String {
+    public class func headerReuseIdentifier() -> String {
         return NSStringFromClass(self)
     }
 

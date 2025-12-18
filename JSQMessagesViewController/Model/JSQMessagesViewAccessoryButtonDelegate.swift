@@ -3,7 +3,7 @@ import UIKit
 
 /// *  The `JSQMessagesViewAccessoryButtonDelegate` protocol defines methods that allow you to
 /// *  handle accessory actions for the collection view.
-@objc public protocol JSQMessagesViewAccessoryButtonDelegate: NSObjectProtocol {
+public protocol JSQMessagesViewAccessoryButtonDelegate: NSObjectProtocol {
 
     /**
      *  Notifies the delegate that the accessory button at the specified indexPath did receive a tap event.

@@ -2,7 +2,7 @@ import UIKit
 
 /// `JSQMessagesToolbarButtonFactory` is a factory that provides a means for creating the default
 /// toolbar button items to be displayed in the content view of a `JSQMessagesInputToolbar`.
-@objc public class JSQMessagesToolbarButtonFactory: NSObject {
+public class JSQMessagesToolbarButtonFactory: NSObject {
 
     private let buttonFont: UIFont
 
@@ -12,7 +12,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesToolbarButtonFactory` object.
      */
-    @objc public override convenience init() {
+    public override convenience init() {
         self.init(font: UIFont.preferredFont(forTextStyle: .headline))
     }
 
@@ -24,7 +24,7 @@ import UIKit
      *
      *  - returns: An initialized `JSQMessagesToolbarButtonFactory` object.
      */
-    @objc public init(font: UIFont) {
+    public init(font: UIFont) {
         self.buttonFont = font
         super.init()
     }
@@ -35,7 +35,7 @@ import UIKit
      *
      *  - returns: A newly created button.
      */
-    @objc public func defaultAccessoryButtonItem() -> UIButton {
+    public func defaultAccessoryButtonItem() -> UIButton {
         let accessoryImage = UIImage.jsq_defaultAccessory() ?? UIImage()
         let normalImage = accessoryImage.jsq_imageMasked(with: UIColor.lightGray)
         let highlightedImage = accessoryImage.jsq_imageMasked(with: UIColor.darkGray)
@@ -62,7 +62,7 @@ import UIKit
      *
      *  - returns: A newly created button.
      */
-    @objc public func defaultSendButtonItem() -> UIButton {
+    public func defaultSendButtonItem() -> UIButton {
         let sendTitle = Bundle.jsq_localizedString(forKey: "send")
 
         let sendButton = UIButton(frame: .zero)

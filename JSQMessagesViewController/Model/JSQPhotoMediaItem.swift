@@ -24,12 +24,12 @@ import UIKit
 /// and represents a photo media message. An initialized `JSQPhotoMediaItem` object can be passed
 /// to a `JSQMediaMessage` object during its initialization to construct a valid media message object.
 /// You may wish to subclass `JSQPhotoMediaItem` to provide additional functionality or behavior.
-@objc public class JSQPhotoMediaItem: JSQMediaItem {
+public class JSQPhotoMediaItem: JSQMediaItem {
 
     /**
      *  The image for the photo media item. The default value is `nil`.
      */
-    @objc public var image: UIImage? {
+    public var image: UIImage? {
         didSet {
             self.cachedImageView = nil
         }
@@ -50,21 +50,21 @@ import UIKit
      *  you may initialize a `JSQPhotoMediaItem` object with a `nil` image.
      *  Once the image has been retrieved, you can then set the image property.
      */
-    @objc public init(image: UIImage?) {
+    public init(image: UIImage?) {
         self.image = image
         super.init(maskAsOutgoing: true)
     }
 
-    @objc public required init(maskAsOutgoing: Bool) {
+    public required init(maskAsOutgoing: Bool) {
         super.init(maskAsOutgoing: maskAsOutgoing)
     }
 
-    @objc public override func clearCachedMediaViews() {
+    public override func clearCachedMediaViews() {
         super.clearCachedMediaViews()
         self.cachedImageView = nil
     }
 
-    @objc public override var appliesMediaViewMaskAsOutgoing: Bool {
+    public override var appliesMediaViewMaskAsOutgoing: Bool {
         didSet {
             self.cachedImageView = nil
         }
@@ -72,7 +72,7 @@ import UIKit
 
     // MARK: - JSQMessageMediaData protocol
 
-    @objc public override func mediaView() -> UIView? {
+    public override func mediaView() -> UIView? {
         guard let image = self.image else {
             return nil
         }
@@ -92,45 +92,45 @@ import UIKit
         return self.cachedImageView
     }
 
-    @objc public override func mediaHash() -> UInt {
+    public override func mediaHash() -> UInt {
         return UInt(bitPattern: self.hash)
     }
 
-    @objc public func mediaDataType() -> String? {
+    public func mediaDataType() -> String? {
         return kUTTypeJPEG as String
     }
 
-    @objc public func mediaData() -> Any? {
+    public func mediaData() -> Any? {
         guard let image = self.image else { return nil }
         return image.jpegData(compressionQuality: 1.0)
     }
 
     // MARK: - NSObject
 
-    @objc public override var hash: Int {
+    public override var hash: Int {
         return super.hash ^ (self.image?.hash ?? 0)
     }
 
-    @objc public override var description: String {
+    public override var description: String {
         return
             "<\(type(of: self)): image=\(String(describing: self.image)), appliesMediaViewMaskAsOutgoing=\(self.appliesMediaViewMaskAsOutgoing)>"
     }
 
     // MARK: - NSCoding
 
-    @objc required public init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         self.image = aDecoder.decodeObject(forKey: "image") as? UIImage
         super.init(coder: aDecoder)
     }
 
-    @objc public override func encode(with aCoder: NSCoder) {
+    public override func encode(with aCoder: NSCoder) {
         super.encode(with: aCoder)
         aCoder.encode(self.image, forKey: "image")
     }
 
     // MARK: - NSCopying
 
-    @objc public override func copy(with zone: NSZone? = nil) -> Any {
+    public override func copy(with zone: NSZone? = nil) -> Any {
         let copy = JSQPhotoMediaItem(image: self.image)
         copy.appliesMediaViewMaskAsOutgoing = self.appliesMediaViewMaskAsOutgoing
         return copy
