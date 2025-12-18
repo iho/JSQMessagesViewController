@@ -1,0 +1,35 @@
+name: JSQMessages
+options:
+  bundleIdPrefix: com.hexedbits
+targets:
+  JSQMessages:
+    type: framework
+    platform: iOS
+    deploymentTarget: "12.0"
+    sources:
+      - path: JSQMessagesViewController
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hexedbits.JSQMessages
+        SKIP_INSTALL: NO
+        DEFINES_MODULE: YES
+        SWIFT_VERSION: 5.0
+        GENERATE_INFOPLIST_FILE: YES
+  
+  JSQMessagesDemo:
+    type: application
+    platform: iOS
+    deploymentTarget: "12.0"
+    sources:
+      - path: JSQMessagesDemo
+    info:
+      path: JSQMessagesDemo/Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen
+    dependencies:
+      - target: JSQMessages
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hexedbits.JSQMessagesDemo
+        SWIFT_VERSION: 5.0
+        CLANG_ENABLE_MODULES: YES
