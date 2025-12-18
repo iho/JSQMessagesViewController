@@ -121,7 +121,7 @@ public typealias JSQLocationMediaItemCompletionBlock = () -> Void
             UIGraphicsBeginImageContextWithOptions(image.size, true, image.scale)
             image.draw(at: CGPoint.zero)
 
-            if let pinImage = pinImage {
+            if pinImage != nil {
                 var point = snapshot.point(for: location.coordinate)
                 // Center the pin
                 point.x -= pin.centerOffset.x

@@ -115,8 +115,8 @@ class DemoModelData {
         self.addAudioMediaMessage()
 
         if UserDefaults.extraMessagesSetting() {
-            let copy = self.messages
-            for _ in 0..<4 {
+            let copy = self.messages.filter { !$0.isMediaMessage }
+            for _ in 0..<12 {
                 self.messages.append(contentsOf: copy)
             }
         }

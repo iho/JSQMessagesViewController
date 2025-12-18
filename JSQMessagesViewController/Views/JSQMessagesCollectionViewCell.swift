@@ -140,8 +140,8 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
         didSet {
             guard let mediaView = mediaView else { return }
 
-            messageBubbleImageView.removeFromSuperview()
-            textView.removeFromSuperview()
+            messageBubbleImageView?.removeFromSuperview()
+            textView?.removeFromSuperview()
 
             mediaView.translatesAutoresizingMaskIntoConstraints = false
             mediaView.frame = messageBubbleContainerView.bounds
@@ -312,9 +312,11 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
         self.messageBubbleTopLabel.text = nil
         self.cellBottomLabel.text = nil
 
-        self.textView.dataDetectorTypes = []
-        self.textView.text = nil
-        self.textView.attributedText = nil
+        if let textView = self.textView {
+            textView.dataDetectorTypes = []
+            textView.text = nil
+            textView.attributedText = nil
+        }
 
         self.avatarImageView.image = nil
         self.avatarImageView.highlightedImage = nil
@@ -390,15 +392,15 @@ public class JSQMessagesCollectionViewCell: UICollectionViewCell {
     public override var backgroundColor: UIColor? {
         didSet {
             guard let color = backgroundColor else { return }
-            cellTopLabel.backgroundColor = color
-            messageBubbleTopLabel.backgroundColor = color
-            cellBottomLabel.backgroundColor = color
+            cellTopLabel?.backgroundColor = color
+            messageBubbleTopLabel?.backgroundColor = color
+            cellBottomLabel?.backgroundColor = color
 
-            messageBubbleImageView.backgroundColor = color
-            avatarImageView.backgroundColor = color
+            messageBubbleImageView?.backgroundColor = color
+            avatarImageView?.backgroundColor = color
 
-            messageBubbleContainerView.backgroundColor = color
-            avatarContainerView.backgroundColor = color
+            messageBubbleContainerView?.backgroundColor = color
+            avatarContainerView?.backgroundColor = color
         }
     }
 

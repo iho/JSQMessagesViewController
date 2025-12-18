@@ -77,11 +77,35 @@ class DemoMessagesViewController: JSQMessagesViewController, UIActionSheetDelega
             as? JSQMessagesCollectionViewFlowLayout
         {
             // Enable springiness for bouncy animations
-            layout.springinessEnabled = UserDefaults.springinessSetting()
-            // Lower resistance = more bouncy (default 1000, max used is 1400)
-            // Using 900 for more visible spring effect
-            layout.springResistanceFactor = 900
+            let enabled = UserDefaults.springinessSetting()
+            print("[JSQDemo] UserDefaults.springinessSetting() returned: \(enabled)")
+            print("[JSQDemo] Setting layout.springinessEnabled = \(enabled)")
+            layout.springinessEnabled = enabled
+            if enabled {
+                layout.springResistanceFactor = 700
+            }
+            self.collectionView.collectionViewLayout.invalidateLayout()
+            print(
+                "[JSQDemo] After setting, layout.springinessEnabled = \(layout.springinessEnabled)")
         }
+
+        DispatchQueue.main.async {
+            let items = self.collectionView.numberOfItems(inSection: 0)
+            let contentSize = self.collectionView.collectionViewLayout.collectionViewContentSize
+            let bounds = self.collectionView.bounds.size
+            let behaviors: Int
+            if let layout = self.collectionView.collectionViewLayout
+                as? JSQMessagesCollectionViewFlowLayout
+            {
+                behaviors = layout.debugDynamicBehaviorsCount
+            } else {
+                behaviors = -1
+            }
+            print(
+                "[JSQDemo] items=\(items) contentSize=\(contentSize) bounds=\(bounds) scrollEnabled=\(self.collectionView.isScrollEnabled) behaviors=\(behaviors)"
+            )
+        }
+
     }
 
     // MARK: - Custom menu actions

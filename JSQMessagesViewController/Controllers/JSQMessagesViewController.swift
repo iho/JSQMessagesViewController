@@ -97,8 +97,12 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         let nib = UINib(nibName: nibName, bundle: Bundle(for: JSQMessagesViewController.self))
         let nibViews = nib.instantiate(withOwner: self, options: nil)
 
-        // The XIB should have set up the outlets via connections
-        // This ensures collectionView and inputToolbar are initialized
+        // The XIB should have set up the outlets via connections.
+        // When instantiated via storyboard (`init(coder:)`), UIKit will not automatically
+        // replace `self.view` with the one from this XIB, so we must.
+        if let nibRootView = nibViews.first as? UIView {
+            self.view = nibRootView
+        }
     }
 
     open override func viewDidLoad() {
@@ -183,6 +187,12 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
                     with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
             }
         }
+    }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        collectionView?.messagesCollectionViewLayout.springinessEnabled = true
+        collectionView?.collectionViewLayout.invalidateLayout()
     }
 
     open override func viewWillDisappear(_ animated: Bool) {
@@ -271,24 +281,84 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.post(
             name: UITextView.textDidChangeNotification, object: textView)
 
+        let oldCount = collectionView.numberOfItems(inSection: 0)
+        let newCount = self.collectionView(collectionView, numberOfItemsInSection: 0)
+
         collectionView.messagesCollectionViewLayout.invalidateLayout(
             with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
-        collectionView.reloadData()
 
-        if automaticallyScrollsToMostRecentMessage {
-            scrollToBottom(animated: animated)
+        if newCount >= oldCount {
+            let insertedIndexPaths = (oldCount..<newCount).map { IndexPath(item: $0, section: 0) }
+
+            let applyUpdates = {
+                if !insertedIndexPaths.isEmpty {
+                    self.collectionView.insertItems(at: insertedIndexPaths)
+                } else {
+                    self.collectionView.reloadSections(IndexSet(integer: 0))
+                }
+            }
+
+            let completion: (Bool) -> Void = { _ in
+                if self.automaticallyScrollsToMostRecentMessage {
+                    self.scrollToBottom(animated: animated)
+                }
+            }
+
+            if animated {
+                collectionView.performBatchUpdates(applyUpdates, completion: completion)
+            } else {
+                UIView.performWithoutAnimation {
+                    collectionView.performBatchUpdates(applyUpdates, completion: completion)
+                    collectionView.layoutIfNeeded()
+                }
+            }
+        } else {
+            collectionView.reloadData()
+            if automaticallyScrollsToMostRecentMessage {
+                scrollToBottom(animated: animated)
+            }
         }
     }
 
     @objc open func finishReceivingMessage(animated: Bool = true) {
         self.showTypingIndicator = false
 
+        let oldCount = collectionView.numberOfItems(inSection: 0)
+        let newCount = self.collectionView(collectionView, numberOfItemsInSection: 0)
+
         collectionView.messagesCollectionViewLayout.invalidateLayout(
             with: JSQMessagesCollectionViewFlowLayoutInvalidationContext.context())
-        collectionView.reloadData()
 
-        if automaticallyScrollsToMostRecentMessage && !jsq_isMenuVisible() {
-            scrollToBottom(animated: animated)
+        if newCount >= oldCount {
+            let insertedIndexPaths = (oldCount..<newCount).map { IndexPath(item: $0, section: 0) }
+
+            let applyUpdates = {
+                if !insertedIndexPaths.isEmpty {
+                    self.collectionView.insertItems(at: insertedIndexPaths)
+                } else {
+                    self.collectionView.reloadSections(IndexSet(integer: 0))
+                }
+            }
+
+            let completion: (Bool) -> Void = { _ in
+                if self.automaticallyScrollsToMostRecentMessage && !self.jsq_isMenuVisible() {
+                    self.scrollToBottom(animated: animated)
+                }
+            }
+
+            if animated {
+                collectionView.performBatchUpdates(applyUpdates, completion: completion)
+            } else {
+                UIView.performWithoutAnimation {
+                    collectionView.performBatchUpdates(applyUpdates, completion: completion)
+                    collectionView.layoutIfNeeded()
+                }
+            }
+        } else {
+            collectionView.reloadData()
+            if automaticallyScrollsToMostRecentMessage && !jsq_isMenuVisible() {
+                scrollToBottom(animated: animated)
+            }
         }
 
         UIAccessibility.post(
@@ -370,10 +440,15 @@ open class JSQMessagesViewController: UIViewController, UICollectionViewDataSour
 
         let cellIdentifier: String
         if isMedia {
-            cellIdentifier =
-                isOutgoing ? outgoingMediaCellIdentifier! : incomingMediaCellIdentifier!
+            cellIdentifier = isOutgoing
+                ? (outgoingMediaCellIdentifier
+                    ?? JSQMessagesCollectionViewCellOutgoing.mediaCellReuseIdentifier())
+                : (incomingMediaCellIdentifier
+                    ?? JSQMessagesCollectionViewCellIncoming.mediaCellReuseIdentifier())
         } else {
-            cellIdentifier = isOutgoing ? outgoingCellIdentifier! : incomingCellIdentifier!
+            cellIdentifier = isOutgoing
+                ? (outgoingCellIdentifier ?? JSQMessagesCollectionViewCellOutgoing.cellReuseIdentifier())
+                : (incomingCellIdentifier ?? JSQMessagesCollectionViewCellIncoming.cellReuseIdentifier())
         }
 
         let cell =

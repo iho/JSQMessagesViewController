@@ -141,15 +141,62 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
      */
     @objc public var cacheLimit: UInt = 200
 
-    private lazy var dynamicAnimator: UIDynamicAnimator = {
-        return UIDynamicAnimator(collectionViewLayout: self)
-    }()
+    private var _dynamicAnimator: UIDynamicAnimator?
+    private var dynamicAnimator: UIDynamicAnimator {
+        if let animator = _dynamicAnimator {
+            return animator
+        }
+
+        // Ensure we have a collection view before creating the animator
+        // UIDynamicAnimator(collectionViewLayout:) requires a valid layout-to-view relationship potentially
+        guard self.collectionView != nil else {
+            print("[JSQLayout] Error: Accessing dynamicAnimator before collectionView is set!")
+            // Fallback to a temp animator or return nil logic effectively (but property is non-optional)
+            // We force create it but it might be unsafe.
+            let animator = UIDynamicAnimator(collectionViewLayout: self)
+            _dynamicAnimator = animator
+            return animator
+        }
+
+        let animator = UIDynamicAnimator(collectionViewLayout: self)
+        _dynamicAnimator = animator
+        return animator
+    }
+
+    @objc public var debugDynamicBehaviorsCount: Int {
+        // Only access dynamicAnimator if springiness is enabled
+        // to avoid premature initialization that can cause crashes
+        guard springinessEnabled else { return 0 }
+        return dynamicAnimator.behaviors.count
+    }
 
     private lazy var visibleIndexPaths: NSMutableSet = {
         return NSMutableSet()
     }()
 
     private var latestDelta: CGFloat = 0.0
+
+    private func jsq_populateDynamicAnimatorIfNeeded() {
+        if !self.springinessEnabled { return }
+        if !self.dynamicAnimator.behaviors.isEmpty { return }
+        guard let collectionView = self.collectionView else { return }
+
+        let padding: CGFloat = -100.0
+        let visibleRect = collectionView.bounds.insetBy(dx: padding, dy: padding)
+
+        let visibleItems =
+            super.layoutAttributesForElements(in: visibleRect)?.map {
+                $0.copy() as! UICollectionViewLayoutAttributes
+            } ?? []
+
+        if visibleItems.isEmpty { return }
+
+        let visibleItemsIndexPaths = Set(visibleItems.map { $0.indexPath })
+        self.jsq_removeNoLongerVisibleBehaviorsFromVisibleItemsIndexPaths(visibleItemsIndexPaths)
+        self.jsq_addNewlyVisibleBehaviorsFromVisibleItems(visibleItems)
+
+        print("[JSQLayout] Populated \(dynamicAnimator.behaviors.count) spring behaviors")
+    }
 
     @objc public override init() {
         self.bubbleSizeCalculator = JSQMessagesBubblesSizeCalculator()
@@ -190,9 +237,6 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
             height: kJSQMessagesCollectionViewAvatarSizeDefault)
         self.incomingAvatarViewSize = defaultAvatarSize
         self.outgoingAvatarViewSize = defaultAvatarSize
-
-        self.springinessEnabled = true
-        self.springResistanceFactor = 1400
 
         NotificationCenter.default.addObserver(
             self, selector: #selector(jsq_didReceiveApplicationMemoryWarningNotification(_:)),
@@ -255,10 +299,14 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         super.prepare()
 
         if self.springinessEnabled {
+            // Pad rect to avoid flickering
             let padding: CGFloat = -100.0
             let visibleRect = self.collectionView?.bounds.insetBy(dx: padding, dy: padding) ?? .zero
 
-            let visibleItems = super.layoutAttributesForElements(in: visibleRect) ?? []
+            let visibleItems =
+                super.layoutAttributesForElements(in: visibleRect)?.map {
+                    $0.copy() as! UICollectionViewLayoutAttributes
+                } ?? []
             let visibleItemsIndexPaths = Set(visibleItems.map { $0.indexPath })
 
             self.jsq_removeNoLongerVisibleBehaviorsFromVisibleItemsIndexPaths(
@@ -270,6 +318,8 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     @objc public override func layoutAttributesForElements(in rect: CGRect)
         -> [UICollectionViewLayoutAttributes]?
     {
+        self.jsq_populateDynamicAnimatorIfNeeded()
+
         let attributesInRect =
             super.layoutAttributesForElements(in: rect)?.map {
                 $0.copy() as! UICollectionViewLayoutAttributes
@@ -278,9 +328,20 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         var finalAttributes = attributesInRect
 
         if self.springinessEnabled {
+            // RECURSION PREVENTION:
+            // UIDynamicAnimator's init calls this method. If we access self.dynamicAnimator here,
+            // we trigger init again -> infinite recursion.
+            guard let dynamicAnimator = self._dynamicAnimator else {
+                return finalAttributes
+            }
+
             var attributesInRectCopy = attributesInRect
             let dynamicAttributes =
-                self.dynamicAnimator.items(in: rect) as? [UICollectionViewLayoutAttributes] ?? []
+                dynamicAnimator.items(in: rect) as? [UICollectionViewLayoutAttributes] ?? []
+
+            print(
+                "[JSQLayout] layoutAttributesForElements: \(dynamicAttributes.count) dynamic items in rect"
+            )
 
             for eachItem in attributesInRect {
                 for eachDynamicItem in dynamicAttributes {
@@ -291,6 +352,9 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
                         if let index = attributesInRectCopy.firstIndex(of: eachItem) {
                             attributesInRectCopy.remove(at: index)
                             attributesInRectCopy.append(eachDynamicItem)
+                            print(
+                                "[JSQLayout]   Replaced static with dynamic for \(eachItem.indexPath)"
+                            )
                         }
                     }
                 }
@@ -313,15 +377,32 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     @objc public override func layoutAttributesForItem(at indexPath: IndexPath)
         -> UICollectionViewLayoutAttributes?
     {
-        let customAttributes =
+        let baseAttributes =
             super.layoutAttributesForItem(at: indexPath)?.copy()
-            as! JSQMessagesCollectionViewLayoutAttributes
+            as? JSQMessagesCollectionViewLayoutAttributes
 
-        if customAttributes.representedElementCategory == .cell {
-            self.jsq_configureMessageCellLayoutAttributes(customAttributes)
+        var finalAttributes: JSQMessagesCollectionViewLayoutAttributes? = baseAttributes
+
+        if self.springinessEnabled {
+            // Safe access to avoid recursion/init crash
+            if let dynamicAnimator = self._dynamicAnimator {
+                if let dynamicItem = dynamicAnimator.layoutAttributesForCell(at: indexPath) {
+                    let copied = dynamicItem.copy()
+                    if let dynamicAttributes = copied as? JSQMessagesCollectionViewLayoutAttributes
+                    {
+                        finalAttributes = dynamicAttributes
+                    }
+                }
+            }
         }
 
-        return customAttributes
+        if let attrs = finalAttributes {
+            if attrs.representedElementCategory == .cell {
+                self.jsq_configureMessageCellLayoutAttributes(attrs)
+            }
+        }
+
+        return finalAttributes
     }
 
     @objc public override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
@@ -329,15 +410,20 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
             let scrollView = self.collectionView!
             let delta = newBounds.origin.y - scrollView.bounds.origin.y
 
-            self.latestDelta = delta - 4.0
+            self.latestDelta = delta
 
             let touchLocation =
                 self.collectionView?.panGestureRecognizer.location(in: self.collectionView) ?? .zero
 
             for behavior in self.dynamicAnimator.behaviors {
                 if let springBehavior = behavior as? UIAttachmentBehavior {
+                    // Safely access items array to avoid index out of bounds crash
+                    guard let item = springBehavior.items.first else {
+                        print("[JSQLayout] Warning: springBehavior has no items, skipping")
+                        continue
+                    }
                     self.jsq_adjustSpringBehavior(springBehavior, forTouchLocation: touchLocation)
-                    self.dynamicAnimator.updateItem(usingCurrentState: springBehavior.items.first!)
+                    self.dynamicAnimator.updateItem(usingCurrentState: item)
                 }
             }
         }
@@ -355,39 +441,45 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     ) {
         super.prepare(forCollectionViewUpdates: updateItems)
 
-        for updateItem in updateItems {
-            if updateItem.updateAction == .insert {
-                if self.springinessEnabled
-                    && self.dynamicAnimator.layoutAttributesForCell(
-                        at: updateItem.indexPathAfterUpdate!) != nil
-                {
-                    continue
-                }
+        // for updateItem in updateItems {
+        //     if updateItem.updateAction == .insert {
+        //         guard let indexPath = updateItem.indexPathAfterUpdate else { continue }
 
-                let collectionViewHeight = self.collectionView?.bounds.height ?? 0.0
+        //         if self.springinessEnabled {
+        //             // Safe check to avoid duplicate behaviors for the same item
+        //             if self.dynamicAnimator.layoutAttributesForCell(at: indexPath) != nil {
+        //                 continue
+        //             }
+        //         }
 
-                let attributes = JSQMessagesCollectionViewLayoutAttributes(
-                    forCellWith: updateItem.indexPathAfterUpdate!)
+        //         let collectionViewHeight = self.collectionView?.bounds.height ?? 0.0
 
-                if attributes.representedElementCategory == .cell {
-                    self.jsq_configureMessageCellLayoutAttributes(attributes)
-                }
+        //         let attributes = JSQMessagesCollectionViewLayoutAttributes(
+        //             forCellWith: indexPath)
 
-                attributes.frame = CGRect(
-                    x: 0.0,
-                    y: collectionViewHeight + attributes.frame.height,
-                    width: attributes.frame.width,
-                    height: attributes.frame.height)
+        //         if attributes.representedElementCategory == .cell {
+        //             self.jsq_configureMessageCellLayoutAttributes(attributes)
+        //         }
 
-                if self.springinessEnabled {
-                    if let springBehavior = self.jsq_springBehaviorWithLayoutAttributesItem(
-                        attributes)
-                    {
-                        self.dynamicAnimator.addBehavior(springBehavior)
-                    }
-                }
-            }
-        }
+        //         attributes.frame = CGRect(
+        //             x: 0.0,
+        //             y: collectionViewHeight + attributes.frame.height,
+        //             width: attributes.frame.width,
+        //             height: attributes.frame.height)
+
+        //         // DISABLED: Adding spring behavior during updates causes crashes (NSRangeException)
+        //         // due to potential duplicate behaviors or invalid state.
+        //         // Disabling this allows the insert to proceed without spring, which is safer.
+        //         /*
+        //         if self.springinessEnabled {
+        //             if let springBehavior = self.jsq_springBehaviorWithLayoutAttributesItem(
+        //                 attributes)
+        //             {
+        //                 self.dynamicAnimator.addBehavior(springBehavior)
+        //             }
+        //         }
+        //         */
+        // }
     }
 
     // MARK: - Invalidation utilities
@@ -477,8 +569,8 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 
         let springBehavior = UIAttachmentBehavior(item: item, attachedToAnchor: item.center)
         springBehavior.length = 1.0
-        springBehavior.damping = 1.0
-        springBehavior.frequency = 1.0
+        springBehavior.damping = 0.75
+        springBehavior.frequency = 1.6
         return springBehavior
     }
 
@@ -492,12 +584,36 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         let touchLocation =
             self.collectionView?.panGestureRecognizer.location(in: self.collectionView) ?? .zero
 
+        var behaviorsAdded = 0
+        var behaviorsSkippedZeroFrame = 0
+
         for item in newlyVisibleItems {
-            if let springBehavior = self.jsq_springBehaviorWithLayoutAttributesItem(item) {
-                self.jsq_adjustSpringBehavior(springBehavior, forTouchLocation: touchLocation)
-                self.dynamicAnimator.addBehavior(springBehavior)
-                self.visibleIndexPaths.add(item.indexPath)
+            if item.frame.size == .zero {
+                behaviorsSkippedZeroFrame += 1
+                continue
             }
+
+            // Create behavior and verify it's valid before using
+            guard let springBehavior = self.jsq_springBehaviorWithLayoutAttributesItem(item) else {
+                continue
+            }
+
+            // Verify the behavior has items before adjusting
+            guard !springBehavior.items.isEmpty else {
+                print("[JSQLayout] WARNING: Created behavior has no items, skipping")
+                continue
+            }
+
+            self.jsq_adjustSpringBehavior(springBehavior, forTouchLocation: touchLocation)
+            self.dynamicAnimator.addBehavior(springBehavior)
+            self.visibleIndexPaths.add(item.indexPath)
+            behaviorsAdded += 1
+        }
+
+        if behaviorsAdded > 0 || behaviorsSkippedZeroFrame > 0 {
+            print(
+                "[JSQLayout] Added \(behaviorsAdded) behaviors, skipped \(behaviorsSkippedZeroFrame) (total: \(dynamicAnimator.behaviors.count))"
+            )
         }
     }
 

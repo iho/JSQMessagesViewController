@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UserDefaults.saveIncomingAvatarSetting(true)
         UserDefaults.saveOutgoingAvatarSetting(true)
+        UserDefaults.saveSpringinessSetting(true)
+        UserDefaults.saveExtraMessagesSetting(true)
 
         // Create window and load initial view controller from storyboard
         self.window = UIWindow(frame: UIScreen.main.bounds)

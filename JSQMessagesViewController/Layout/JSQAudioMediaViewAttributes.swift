@@ -127,7 +127,7 @@ import UIKit
     @objc public override convenience init() {
         let tintColor = UIColor.jsq_messageBubbleBlue()
         let options: AVAudioSession.CategoryOptions = [
-            .duckOthers, .defaultToSpeaker, .allowBluetooth,
+            .duckOthers, .defaultToSpeaker,
         ]
 
         self.init(
