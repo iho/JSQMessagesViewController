@@ -82,7 +82,7 @@ class DemoMessagesViewController: JSQMessagesViewController, UIActionSheetDelega
             print("[JSQDemo] Setting layout.springinessEnabled = \(enabled)")
             layout.springinessEnabled = enabled
             if enabled {
-                layout.springResistanceFactor = 700
+                // layout.springResistanceFactor = 10
             }
             self.collectionView.collectionViewLayout.invalidateLayout()
             print(

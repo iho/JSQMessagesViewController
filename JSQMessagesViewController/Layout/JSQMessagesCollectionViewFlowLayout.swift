@@ -53,7 +53,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
      *  - Discussion: The default value is `1000`. Increasing this value increases the resistance, that is, items become less "bouncy".
      *  Decrease this value in order to make items more "bouncy".
      */
-    @objc public var springResistanceFactor: UInt = 1000
+    @objc public var springResistanceFactor: UInt = 200
 
     /**
      *  Returns the width of items in the layout.
@@ -176,28 +176,6 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 
     private var latestDelta: CGFloat = 0.0
 
-    private func jsq_populateDynamicAnimatorIfNeeded() {
-        if !self.springinessEnabled { return }
-        if !self.dynamicAnimator.behaviors.isEmpty { return }
-        guard let collectionView = self.collectionView else { return }
-
-        let padding: CGFloat = -100.0
-        let visibleRect = collectionView.bounds.insetBy(dx: padding, dy: padding)
-
-        let visibleItems =
-            super.layoutAttributesForElements(in: visibleRect)?.map {
-                $0.copy() as! UICollectionViewLayoutAttributes
-            } ?? []
-
-        if visibleItems.isEmpty { return }
-
-        let visibleItemsIndexPaths = Set(visibleItems.map { $0.indexPath })
-        self.jsq_removeNoLongerVisibleBehaviorsFromVisibleItemsIndexPaths(visibleItemsIndexPaths)
-        self.jsq_addNewlyVisibleBehaviorsFromVisibleItems(visibleItems)
-
-        print("[JSQLayout] Populated \(dynamicAnimator.behaviors.count) spring behaviors")
-    }
-
     @objc public override init() {
         self.bubbleSizeCalculator = JSQMessagesBubblesSizeCalculator()
         super.init()
@@ -318,7 +296,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
     @objc public override func layoutAttributesForElements(in rect: CGRect)
         -> [UICollectionViewLayoutAttributes]?
     {
-        self.jsq_populateDynamicAnimatorIfNeeded()
+        // self.jsq_populateDynamicAnimatorIfNeeded() // Removed: Should only be called in prepare()
 
         let attributesInRect =
             super.layoutAttributesForElements(in: rect)?.map {
@@ -339,10 +317,6 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
             let dynamicAttributes =
                 dynamicAnimator.items(in: rect) as? [UICollectionViewLayoutAttributes] ?? []
 
-            print(
-                "[JSQLayout] layoutAttributesForElements: \(dynamicAttributes.count) dynamic items in rect"
-            )
-
             for eachItem in attributesInRect {
                 for eachDynamicItem in dynamicAttributes {
                     if eachItem.indexPath == eachDynamicItem.indexPath
@@ -352,9 +326,6 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
                         if let index = attributesInRectCopy.firstIndex(of: eachItem) {
                             attributesInRectCopy.remove(at: index)
                             attributesInRectCopy.append(eachDynamicItem)
-                            print(
-                                "[JSQLayout]   Replaced static with dynamic for \(eachItem.indexPath)"
-                            )
                         }
                     }
                 }
@@ -410,7 +381,7 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
             let scrollView = self.collectionView!
             let delta = newBounds.origin.y - scrollView.bounds.origin.y
 
-            self.latestDelta = delta
+            self.latestDelta = delta - 4.0
 
             let touchLocation =
                 self.collectionView?.panGestureRecognizer.location(in: self.collectionView) ?? .zero
@@ -568,9 +539,9 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         }
 
         let springBehavior = UIAttachmentBehavior(item: item, attachedToAnchor: item.center)
-        springBehavior.length = 1.0
-        springBehavior.damping = 0.75
-        springBehavior.frequency = 1.6
+        springBehavior.length = 0.0
+        springBehavior.damping = 0.5
+        springBehavior.frequency = 1.5
         return springBehavior
     }
 
@@ -584,12 +555,8 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
         let touchLocation =
             self.collectionView?.panGestureRecognizer.location(in: self.collectionView) ?? .zero
 
-        var behaviorsAdded = 0
-        var behaviorsSkippedZeroFrame = 0
-
         for item in newlyVisibleItems {
             if item.frame.size == .zero {
-                behaviorsSkippedZeroFrame += 1
                 continue
             }
 
@@ -600,20 +567,12 @@ public let kJSQMessagesCollectionViewAvatarSizeDefault: CGFloat = 30.0
 
             // Verify the behavior has items before adjusting
             guard !springBehavior.items.isEmpty else {
-                print("[JSQLayout] WARNING: Created behavior has no items, skipping")
                 continue
             }
 
             self.jsq_adjustSpringBehavior(springBehavior, forTouchLocation: touchLocation)
             self.dynamicAnimator.addBehavior(springBehavior)
             self.visibleIndexPaths.add(item.indexPath)
-            behaviorsAdded += 1
-        }
-
-        if behaviorsAdded > 0 || behaviorsSkippedZeroFrame > 0 {
-            print(
-                "[JSQLayout] Added \(behaviorsAdded) behaviors, skipped \(behaviorsSkippedZeroFrame) (total: \(dynamicAnimator.behaviors.count))"
-            )
         }
     }
 
